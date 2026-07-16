@@ -59,6 +59,7 @@
             transition: background-color 0.4s ease;
         }
 
+        /* */
         .phone-container {
             width: 100%;
             max-width: 430px;
@@ -111,6 +112,7 @@
             background-size: 50px 50px;
         }
 
+        /* */
         .top-actions-row {
             position: absolute;
             top: 15px;
@@ -347,7 +349,7 @@
             transform: translateY(-1.5px) scale(1.03);
         }
 
-        /* === 💮 LỊCH ĐIỂM DANH GÕ MỘC 30 NGÀY (STREAK CALENDAR) === */
+        /* */
         .reading-challenge-widget {
             background: var(--card-light);
             border-radius: 20px;
@@ -403,7 +405,6 @@
             transform: scale(1.03);
         }
 
-        /* Ô lưới lịch điểm danh đóng mộc */
         .calendar-grid-v5 {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -426,7 +427,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Khi đã điểm danh sẽ đóng mộc đỏ son */
         .calendar-day-cell.stamped::after {
             content: "💮";
             position: absolute;
@@ -440,7 +440,7 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* === 🕯️ HƯƠNG ĐỊNH TÂM POMODORO (FOCUS TIMER) === */
+        /* */
         .incense-widget-section {
             padding: 0 16px;
         }
@@ -468,7 +468,6 @@
             color: var(--green-bamboo);
         }
 
-        /* Khung Lư Hương ảo nghệ thuật */
         .incense-visual-burner {
             height: 110px;
             width: 100%;
@@ -480,14 +479,13 @@
             margin: 6px 0;
         }
 
-        /* Làn khói ảo bay bổng SVG */
         .incense-smoke-wrapper {
             position: absolute;
             bottom: 30px;
             height: 80px;
             width: 40px;
             pointer-events: none;
-            display: none; /* Chỉ hiện khi đang chạy */
+            display: none;
         }
 
         .incense-smoke-wrapper.active {
@@ -529,17 +527,15 @@
             }
         }
 
-        /* Nén nhang đỏ */
         .incense-stick-shaft {
             width: 3px;
-            height: 55px; /* Giảm dần theo thời gian */
+            height: 55px;
             background-color: var(--red-clay);
             border-radius: 2px;
             position: relative;
             transition: height 1s linear;
         }
 
-        /* Đốm tàn nhang phát sáng nhẹ */
         .incense-ember-glow {
             width: 5px;
             height: 5px;
@@ -562,7 +558,6 @@
             to { transform: scale(1.3); opacity: 1; }
         }
 
-        /* Lư đồng */
         .bronze-pot-burner {
             width: 54px;
             height: 24px;
@@ -585,7 +580,6 @@
             border-radius: 2px;
         }
 
-        /* Đồng hồ đếm ngược */
         .timer-time-display {
             font-family: 'Playfair Display', serif;
             font-size: 24px;
@@ -635,7 +629,7 @@
             background-color: var(--red-clay);
         }
 
-        /* === 🔮 GIEO QUẺ TẦM SÁCH === */
+        /* */
         .fortune-widget-section {
             padding: 0 16px;
         }
@@ -704,19 +698,6 @@
             cursor: pointer;
             margin-top: 4px;
             transition: all 0.2s;
-        }
-
-        @keyframes shakeTub {
-            0% { transform: rotate(0); }
-            20% { transform: rotate(-8deg) translateY(-2px); }
-            40% { transform: rotate(8deg) translateY(2px); }
-            60% { transform: rotate(-8deg) translateY(-2px); }
-            80% { transform: rotate(8deg) translateY(2px); }
-            100% { transform: rotate(0); }
-        }
-
-        .shaking-animation {
-            animation: shakeTub 0.5s ease-in-out infinite;
         }
 
         .fortune-result-overlay {
@@ -793,7 +774,7 @@
             cursor: pointer;
         }
 
-        /* === BỘ LỌC TÂM TRẠNG & TÌM KIẾM === */
+        /* */
         .mood-filter-scroll {
             display: flex;
             gap: 8px;
@@ -873,6 +854,7 @@
             align-items: start;
         }
 
+        /* */
         .bento-book-card {
             background: var(--card-light);
             border-radius: 20px;
@@ -1006,6 +988,7 @@
             padding: 0 16px;
         }
 
+        /* */
         .mailbox-card {
             background: linear-gradient(135deg, #fdfbf7 0%, #f6eae1 100%);
             border-radius: 24px;
@@ -1038,7 +1021,6 @@
             margin-bottom: 12px;
         }
 
-        /* Bộ chọn mộc trà tâm trạng */
         .mood-stamp-selector {
             display: flex;
             justify-content: center;
@@ -1124,6 +1106,7 @@
             pointer-events: auto;
         }
 
+        /* */
         .diary-scroll {
             width: 100%;
             max-width: 375px;
@@ -1281,6 +1264,7 @@
             transition: opacity 0.3s ease;
         }
 
+        /* */
         .admin-dashboard-modal.active {
             opacity: 1;
             pointer-events: auto;
@@ -1481,6 +1465,7 @@
 </head>
 <body>
 
+    <!-- -->
     <div class="phone-container fade-in-element" id="main-phone-container">
         
         <!-- Banner -->
@@ -1748,13 +1733,14 @@
         <span id="toast-icon">✨</span> <span id="toast-text">Đã hoàn thành!</span>
     </div>
 
+    <!-- -->
     <script>
         /* =========================================================================
            I. CẤU HÌNH BIO & GOOGLE SHEETS LINK
            ========================================================================= */
         const BIO_CONFIG = {
             displayName: "Góc Đầu Tư Tri Thức",
-            username: "@gocdautuchithuc",
+            username: "@gocdaututrithuc",
             avatar: "📚",
             bio: '"Có 1 triệu đồng thì kinh doanh gì hời nhất? Đầu tư vào bộ não của bạn chính là thương vụ chắc chắn sinh lời 100%!"',
             facebookUrl: "https://www.facebook.com/profile.php?id=61591746310277",
@@ -1836,7 +1822,7 @@
             }
         ];
 
-        // Quẻ xăm
+        /* */
         let FORTUNES_DATABASE = {
             financial: [
                 { seal: "Đại Cát", poem: "🪙 Tài lộc khai hoa bởi trí tâm,<br>Dừng ngay tiêu sản tích tài âm.<br>Đường đi đúng đắn lùi túng thiếu...", bookId: "chagiautap1" },
@@ -1851,7 +1837,7 @@
         };
 
         /* =========================================================================
-           III. ĐỒNG BỘ DỮ LIỆU GOOGLE SHEETS (ĐÃ SỬA LỖI LỀ DÒNG 1850)
+           III. ĐỒNG BỘ DỮ LIỆU GOOGLE SHEETS VÀ SỬA LỖI ĐỌC DỮ LIỆU CỘT
            ========================================================================= */
         function loadBooksFromGoogleSheets() {
             if (!BIO_CONFIG.googleSheetCsvUrl) {
@@ -1859,38 +1845,87 @@
                 return;
             }
 
+            console.log("Đang tải dữ liệu từ Google Sheets: " + BIO_CONFIG.googleSheetCsvUrl);
+
             Papa.parse(BIO_CONFIG.googleSheetCsvUrl, {
                 download: true,
                 header: true,
-                skipEmptyLines: true,
+                skipEmptyLines: 'greedy',
                 complete: function(results) {
+                    console.log("Dữ liệu gốc nhận được từ Google Sheets:", results);
+                    
+                    if (results.errors && results.errors.length > 0) {
+                        console.warn("Lỗi nhỏ khi phân tích CSV:", results.errors);
+                    }
+
                     if (results.data && results.data.length > 0) {
-                        BOOKS_DATABASE = results.data.map(row => ({
-                            id: row.id || "book_" + Math.random(),
-                            title: row.title || "Tên sách",
-                            badge: row.badge || "Sách Hay",
-                            category: row.category || "tatca",
-                            quote: row.quote || "Câu trích dẫn đắt giá.",
-                            ratings_tham: parseInt(row.ratings_tham) || 5,
-                            ratings_de_doc: parseInt(row.ratings_de_doc) || 5,
-                            ratings_ung_dung: parseInt(row.ratings_ung_dung) || 5,
-                            image: row.image || "",
-                            shopeeLink: row.shopeeLink || "#",
-                            tiktokLink: row.tiktokLink || "#",
-                            tikiLink: row.tikiLink || "#",
-                            previewLink: row.previewLink || "#",
-                            readTime: row.readTime || "~3 ngày",
-                            hasStamp: String(row.hasStamp).toLowerCase() === "true" || row.hasStamp === true ? "true" : "false",
-                            lessons: row.lessons || "Bài học 1|Bài học 2|Bài học 3",
-                            reviewText: row.reviewText || "Cảm nhận sách..."
-                        }));
-                        console.log("Đồng bộ Google Sheets thành công!");
-                        showToast("☁️", "Tự động đồng bộ kho sách mới nhất từ đám mây!");
+                        const cleanedData = results.data.filter(row => {
+                            const values = Object.values(row).map(v => String(v).trim());
+                            return values.some(v => v !== "" && v !== "undefined" && v !== "null");
+                        });
+
+                        if (cleanedData.length === 0) {
+                            console.warn("Không có dòng dữ liệu hợp lệ trong Google Sheet.");
+                            initializePage();
+                            return;
+                        }
+
+                        /* */
+                        BOOKS_DATABASE = cleanedData.map(row => {
+                            const cleanRow = {};
+                            for (let key in row) {
+                                if (row.hasOwnProperty(key)) {
+                                    cleanRow[key.toLowerCase().trim()] = String(row[key]).trim();
+                                }
+                            }
+
+                            const getVal = (keysArray, defaultValue = "") => {
+                                for (let k of keysArray) {
+                                    if (cleanRow[k] !== undefined && cleanRow[k] !== "undefined" && cleanRow[k] !== "null") {
+                                        return cleanRow[k];
+                                    }
+                                }
+                                return defaultValue;
+                            };
+
+                            const id = getVal(['id', 'mã', 'ma_sach', 'mã sách'], "book_" + Math.random().toString(36).substr(2, 9));
+                            const title = getVal(['title', 'tựa sách', 'tua sach', 'tên sách', 'ten sach', 'tên', 'ten'], "Sách chưa đặt tên");
+                            const badge = getVal(['badge', 'nhãn', 'nhan'], "Sách Hay");
+                            const category = getVal(['category', 'danh mục', 'danh muc', 'thể loại', 'the loai'], "tatca");
+                            const quote = getVal(['quote', 'trích dẫn', 'trich dan'], "Trích dẫn đắt giá đang cập nhật.");
+                            
+                            const ratings_tham = parseInt(getVal(['ratings_tham', 'độ thấm', 'do tham'], "5")) || 5;
+                            const ratings_de_doc = parseInt(getVal(['ratings_de_doc', 'dễ đọc', 'de doc'], "5")) || 5;
+                            const ratings_ung_dung = parseInt(getVal(['ratings_ung_dung', 'ứng dung', 'ứng dụng', 'ung dung'], "5")) || 5;
+
+                            const image = getVal(['image', 'ảnh', 'anh', 'hình ảnh', 'hinh anh'], "");
+                            const shopeeLink = getVal(['shopeelink', 'link shopee', 'shopee'], "#");
+                            const tiktokLink = getVal(['tiktoklink', 'link tiktok', 'tiktok'], "#");
+                            const tikiLink = getVal(['tikilink', 'link tiki', 'tiki'], "#");
+                            const previewLink = getVal(['previewlink', 'đọc thử', 'doc thu', 'link đọc thử', 'link doc thu'], "#");
+                            const readTime = getVal(['readtime', 'thời gian đọc', 'thoi gian doc', 'thời gian', 'thoi gian'], "~3 ngày");
+                            const hasStamp = String(getVal(['hasstamp', 'đóng dấu', 'dong dau', 'đóng mộc', 'dong moc'], "false")).toLowerCase() === "true" ? "true" : "false";
+                            const lessons = getVal(['lessons', 'bài học', 'bai hoc'], "Bài học đang cập nhật.");
+                            const reviewText = getVal(['reviewtext', 'cảm nhận', 'cam nhan', 'review', 'đánh giá', 'danh gia'], "Cảm nhận đang cập nhật...");
+
+                            return {
+                                id, title, badge, category, quote,
+                                ratings_tham, ratings_de_doc, ratings_ung_dung,
+                                image, shopeeLink, tiktokLink, tikiLink, previewLink,
+                                readTime, hasStamp, lessons, reviewText
+                            };
+                        });
+
+                        console.log("Danh sách sách đã nạp và chuẩn hóa thành công:", BOOKS_DATABASE);
+                        showToast("☁️", "Khởi tạo thành công! Kho sách đã liên kết với Google Sheets.");
+                    } else {
+                        console.warn("Không thể đọc mảng dữ liệu. Dùng dữ liệu dự phòng.");
                     }
                     initializePage();
                 },
                 error: function(err) {
-                    console.error("Lỗi đồng bộ Google Sheets, chuyển sang database dự phòng:", err);
+                    console.error("Lỗi PapaParse nặng không thể tải file Google Sheets:", err);
+                    showToast("⚠️", "Không kết nối được Google Sheets. Sử dụng dữ liệu dự phòng!");
                     initializePage();
                 }
             });
@@ -1916,6 +1951,10 @@
         let activeMailboxMoodId = "anyen";
         let activeMailboxMoodText = "🌸 An Yên";
 
+        window.onload = function() {
+            loadBooksFromGoogleSheets();
+        };
+
         function initializePage() {
             applyProfileConfig();
             loadStateFromStorage();
@@ -1924,7 +1963,7 @@
             renderCalendarGrid();
         }
 
-        // Tạo nhạc chuông/mõ bằng Web Audio API
+        /* */
         function playSynthesizedSound(type) {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -1980,7 +2019,6 @@
             } catch (e) {}
         }
 
-        // Đổi Giao Diện Bạch Trà <-> Hắc Trà
         function toggleTheme() {
             playSynthesizedSound('chime');
             const phone = document.getElementById('main-phone-container');
@@ -2048,7 +2086,7 @@
             }
         }
 
-        // Khôi phục trạng thái
+        /* */
         function loadStateFromStorage() {
             const storedClicks = localStorage.getItem('goc_dau_tu_tri_thuc_clicks_v5');
             if (storedClicks) {
@@ -2133,7 +2171,7 @@
         }
 
         /* =========================================================================
-           VI. QUẢN LÝ NÉN HƯƠNG ĐỊNH TÂM (POMODORO)
+           VI. QUẢN LÝ NÉN HƯƠNG ĐỊNH TÂM (POMODORO) - ĐÃ SỬA LỖI .classList.add()
            ========================================================================= */
         function setIncenseDuration(minutes) {
             if (isIncenseTimerRunning) return;
@@ -2142,9 +2180,9 @@
             timerTimeLeft = minutes * 60;
             
             document.querySelectorAll('.btn-incense-setup').forEach(btn => btn.classList.remove('active'));
-            if (minutes === 15) document.getElementById('t-setup-15').add('active');
-            if (minutes === 25) document.getElementById('t-setup-25').add('active');
-            if (minutes === 45) document.getElementById('t-setup-45').add('active');
+            if (minutes === 15) document.getElementById('t-setup-15').classList.add('active');
+            if (minutes === 25) document.getElementById('t-setup-25').classList.add('active');
+            if (minutes === 45) document.getElementById('t-setup-45').classList.add('active');
 
             updateTimerDisplay();
         }
@@ -2156,6 +2194,7 @@
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
+        /* */
         function toggleIncenseTimer() {
             playSynthesizedSound('chime');
             const btn = document.getElementById('timer-control-btn');
@@ -2272,6 +2311,7 @@
             document.getElementById('fortune-result-box').classList.remove('active');
         }
 
+        /* */
         function renderMoodFilters() {
             const container = document.getElementById('mood-tabs-container');
             container.innerHTML = '';
@@ -2371,13 +2411,19 @@
             });
         }
 
+        /* */
         function openDiary(bookId) {
             playSynthesizedSound('pageflip');
             const book = BOOKS_DATABASE.find(b => b.id === bookId);
             if (!book) return;
 
             document.getElementById('modal-book-title').innerText = book.title;
-            document.getElementById('modal-book-tham').innerText = `${book.ratings_tham}/5`;
+            
+            // Render độ thấm lấp lánh trà nóng
+            let cups = "";
+            for (let i = 0; i < book.ratings_tham; i++) cups += "🍵";
+            document.getElementById('modal-book-tham').innerText = `${cups} (${book.ratings_tham}/5)`;
+            
             document.getElementById('modal-book-time').innerText = book.readTime;
             document.getElementById('modal-book-quote').innerText = `"${book.quote}"`;
             
@@ -2401,9 +2447,26 @@
             const tkBtn = document.getElementById('modal-link-tiki');
             const pBtn = document.getElementById('modal-link-preview');
 
-            sBtn.onclick = () => recordAffClick(book.id, book.title, 'Shopee', book.shopeeLink);
-            tBtn.onclick = () => recordAffClick(book.id, book.title, 'TikTok Shop', book.tiktokLink);
-            tkBtn.onclick = () => recordAffClick(book.id, book.title, 'Tiki', book.tikiLink);
+            sBtn.href = book.shopeeLink && book.shopeeLink !== '#' ? book.shopeeLink : '#';
+            tBtn.href = book.tiktokLink && book.tiktokLink !== '#' ? book.tiktokLink : '#';
+            tkBtn.href = book.tikiLink && book.tikiLink !== '#' ? book.tikiLink : '#';
+
+            sBtn.style.display = (book.shopeeLink && book.shopeeLink !== '#') ? 'flex' : 'none';
+            tBtn.style.display = (book.tiktokLink && book.tiktokLink !== '#') ? 'flex' : 'none';
+            tkBtn.style.display = (book.tikiLink && book.tikiLink !== '#') ? 'flex' : 'none';
+
+            sBtn.onclick = (e) => {
+                if (sBtn.getAttribute('href') === '#') e.preventDefault();
+                recordAffClickOnly(book.id, book.title, 'Shopee');
+            };
+            tBtn.onclick = (e) => {
+                if (tBtn.getAttribute('href') === '#') e.preventDefault();
+                recordAffClickOnly(book.id, book.title, 'TikTok Shop');
+            };
+            tkBtn.onclick = (e) => {
+                if (tkBtn.getAttribute('href') === '#') e.preventDefault();
+                recordAffClickOnly(book.id, book.title, 'Tiki');
+            };
 
             if (book.previewLink && book.previewLink !== '#') {
                 pBtn.style.display = 'flex';
@@ -2415,7 +2478,7 @@
             toggleDiaryModal(true);
         }
 
-        function recordAffClick(bookId, bookTitle, platform, targetUrl) {
+        function recordAffClickOnly(bookId, bookTitle, platform) {
             if (!bookClicks[bookId]) {
                 bookClicks[bookId] = 0;
             }
@@ -2423,12 +2486,10 @@
             saveClicksToStorage();
             filterAndRender();
 
-            showToast("🧧", `Lộc duyên đưa bạn đến ${platform} mua sách...`);
-            setTimeout(() => {
-                window.open(targetUrl, '_blank');
-            }, 600);
+            showToast("🧧", `Hữu duyên đưa bạn đến ${platform} mua sách...`);
         }
 
+        /* */
         function generateQuoteCardImage(title, quote) {
             playSynthesizedSound('chime');
             
@@ -2530,51 +2591,65 @@
             }
         }
 
+        /* */
+        function toggleLikeBook(bookId, bookTitle, event) {
+            event.stopPropagation();
+            playSynthesizedSound('chime');
+
+            if (!bookLikes[bookId]) {
+                bookLikes[bookId] = 0;
+            }
+
+            triggerHeartsAtCursor(event);
+
+            bookLikes[bookId]++;
+            localStorage.setItem('goc_dau_tu_tri_thuc_likes_v5', JSON.stringify(bookLikes));
+            
+            filterAndRender();
+            showToast("🌸", `Đã gửi ý niệm tốt lành đến cuốn "${bookTitle.split(' - ')[0]}"!`);
+        }
+
+        function triggerHeartsAtCursor(event) {
+            const elements = ["🌸", "❤️", "💮", "🍃"];
+            const container = document.body;
+            const x = event.clientX || (event.touches ? event.touches[0].clientX : window.innerWidth / 2);
+            const y = event.clientY || (event.touches ? event.touches[0].clientY : window.innerHeight / 2);
+            
+            for (let i = 0; i < 6; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerText = elements[Math.floor(Math.random() * elements.length)];
+                
+                heart.style.left = `${x - 10 + (Math.random() * 20 - 10)}px`;
+                heart.style.top = `${y - 10 + (Math.random() * 20 - 10)}px`;
+                heart.style.setProperty('--rot-deg', `${Math.random() * 60 - 30}deg`);
+                
+                container.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 1200);
+            }
+        }
+
+        function triggerCelebrationHearts() {
+            const elements = ["🌸", "💮", "🍃", "🏆"];
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerText = elements[Math.floor(Math.random() * elements.length)];
+            
+            const x = Math.random() * window.innerWidth;
+            const y = window.innerHeight - 80;
+            
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+            heart.style.setProperty('--rot-deg', `${Math.random() * 80 - 40}deg`);
+            
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 1200);
+        }
+
         function toggleDiaryModal(show) {
             const modal = document.getElementById('diary-modal');
             if (show) modal.classList.add('active');
             else modal.classList.remove('active');
-        }
-
-        function closeDiaryModal(event) {
-            toggleDiaryModal(false);
-        }
-
-        function selectMailboxMood(moodId, moodText) {
-            playSynthesizedSound('woodblock');
-            activeMailboxMoodId = moodId;
-            activeMailboxMoodText = moodText;
-
-            document.querySelectorAll('.btn-mood-stamp').forEach(btn => btn.classList.remove('active'));
-            if (moodId === 'anyen') document.getElementById('mood-s-anyen').classList.add('active');
-            if (moodId === 'tramtu') document.getElementById('mood-s-tramtu').classList.add('active');
-            if (moodId === 'khoisac') document.getElementById('mood-s-khoisac').classList.add('active');
-            if (moodId === 'trantro') document.getElementById('mood-s-trantro').classList.add('active');
-        }
-
-        function handleMailSubmit(event) {
-            event.preventDefault();
-            playSynthesizedSound('woodblock');
-            const textInput = document.getElementById('mailbox-text');
-            const message = textInput.value.trim();
-            
-            if (message) {
-                let letters = [];
-                const storedLetters = localStorage.getItem('goc_dau_tu_tri_thuc_letters_v5');
-                if (storedLetters) {
-                    letters = JSON.parse(storedLetters);
-                }
-                letters.unshift({
-                    id: Date.now().toString(),
-                    text: message,
-                    mood: activeMailboxMoodText,
-                    time: new Date().toLocaleString('vi-VN')
-                });
-                localStorage.setItem('goc_dau_tu_tri_thuc_letters_v5', JSON.stringify(letters));
-
-                showToast("📬", `Cánh thư mang mộc "${activeMailboxMoodText}" đã gửi thành công!`);
-                textInput.value = '';
-            }
         }
 
         function toggleAdminModal(show) {
@@ -2587,98 +2662,20 @@
             }
         }
 
-        function closeAdminModal(event) {
-            toggleAdminModal(false);
-        }
-
-        function renderAdminData() {
-            const lettersList = document.getElementById('letters-list');
-            const storedLetters = localStorage.getItem('goc_dau_tu_tri_thuc_letters_v5');
-            let letters = storedLetters ? JSON.parse(storedLetters) : [];
-            
-            document.getElementById('letter-count').innerText = letters.length;
-            
-            if (letters.length === 0) {
-                lettersList.innerHTML = `<div class="letter-item" style="font-style: italic; color: #7d7568; text-align: center; width:100%;">Thư phòng chưa nhận phong thư nào...</div>`;
-            } else {
-                lettersList.innerHTML = '';
-                letters.forEach(letter => {
-                    lettersList.innerHTML += `
-                        <div class="letter-item" id="letter-${letter.id}">
-                            <div>
-                                <div style="font-weight:700; font-size:10px; color: var(--gold-accent); margin-bottom:2px;">
-                                    ⏱️ ${letter.time} | Mộc: <span style="color:var(--red-clay);">${letter.mood || '🌸 An Yên'}</span>
-                                </div>
-                                <div style="font-size:11.5px; color:#ebdcd0;">${letter.text}</div>
-                            </div>
-                            <button class="btn-delete-letter" onclick="deleteSingleLetter('${letter.id}')" title="Xóa thư"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    `;
-                });
-            }
-
-            const statsList = document.getElementById('stats-list');
-            statsList.innerHTML = '';
-            
-            BOOKS_DATABASE.forEach(book => {
-                const clicks = bookClicks[book.id] || 0;
-                const likes = bookLikes[book.id] || 0;
-                statsList.innerHTML += `
-                    <div class="stat-item">
-                        <span>📖 ${book.title.split(' - ')[0]}</span>
-                        <span style="color: var(--gold-accent); font-size:11px;">${clicks} clicks | ${likes} tim</span>
-                    </div>
-                `;
-            });
-        }
-
-        function deleteSingleLetter(letterId) {
-            let letters = JSON.parse(localStorage.getItem('goc_dau_tu_tri_thuc_letters_v5') || '[]');
-            letters = letters.filter(l => l.id !== letterId);
-            localStorage.setItem('goc_dau_tu_tri_thuc_letters_v5', JSON.stringify(letters));
-            
-            renderAdminData();
-            showToast("🗑️", "Đã xóa phong thư ẩn danh thành công!");
-        }
-
-        function clearAllDataWithCustomUI() {
-            const check = confirm("Bạn chắc chắn muốn khôi phục số liệu click, lượt thả tim, lịch điểm danh và dọn hòm thư về nguyên trạng gốc chứ?");
-            if (check) {
-                localStorage.removeItem('goc_dau_tu_tri_thuc_letters_v5');
-                localStorage.removeItem('goc_dau_tu_tri_thuc_clicks_v5');
-                localStorage.removeItem('goc_dau_tu_tri_thuc_likes_v5');
-                localStorage.removeItem('goc_dau_tu_tri_thuc_stamps_v5');
-                localStorage.removeItem('goc_last_checkin_day_v5');
-                
-                loadStateFromStorage();
-                renderAdminData();
-                filterAndRender();
-                renderCalendarGrid();
-                showToast("♻️", "Đã dọn dẹp thư phòng tịnh không!");
-            }
-        }
-
-        function showToast(icon, text) {
-            const toast = document.getElementById('custom-toast');
-            document.getElementById('toast-icon').innerText = icon;
-            document.getElementById('toast-text').innerText = text;
-            
-            toast.classList.add('reveal');
-            setTimeout(() => {
-                toast.classList.remove('reveal');
-            }, 3000);
-        }
-
-        function copyBioLink() {
+        function copyCouponCode(code, redirectUrl) {
             playSynthesizedSound('chime');
             const dummy = document.createElement('textarea');
-            dummy.value = window.location.href;
+            dummy.value = code;
             document.body.appendChild(dummy);
             dummy.select();
             document.execCommand('copy');
             document.body.removeChild(dummy);
-            
-            showToast("✨", "Đã bọc liên kết Thư Quán!");
+
+            showToast("🎟️", `Đã bóc lì xì mã độc quyền: ${code}! Đang đến cửa hàng...`);
+
+            setTimeout(() => {
+                window.open(redirectUrl, '_blank');
+            }, 1200);
         }
     </script>
 </body>
