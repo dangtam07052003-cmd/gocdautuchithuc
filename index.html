@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Góc Đầu Tư Tri Thức - Bio Link</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0b0b0b; /* Dark backdrop like the mobile preview */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 10px;
+        }
+
+        /* Container simulating the phone screen */
+        .phone-container {
+            width: 100%;
+            max-width: 430px; /* Standard mobile width */
+            background-color: #faf6f0; /* Warm beige background inside the bio */
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 4px solid #222;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 24px 20px;
+        }
+
+        /* Profile Section Card */
+        .profile-card {
+            background: #fdfbf7;
+            border-radius: 32px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .avatar-container {
+            width: 90px;
+            height: 90px;
+            background-color: #b5a48c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 16px auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .profile-title {
+            font-size: 21px;
+            font-weight: 700;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        /* Verified blue badge */
+        .verified-badge {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: #2f80ed;
+            color: #fff;
+            border-radius: 50%;
+            position: relative;
+            font-size: 10px;
+            line-height: 18px;
+            text-align: center;
+        }
+        .verified-badge::after {
+            content: '✓';
+            font-weight: bold;
+        }
+
+        .username {
+            font-size: 14px;
+            color: #7d7568;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .bio-text {
+            font-size: 14.5px;
+            color: #4a4238;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        /* Social Icons Row */
+        .social-row {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .social-btn {
+            width: 44px;
+            height: 44px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .social-btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* Book Product Card */
+        .product-card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Badge Best Seller */
+        .best-seller-badge {
+            align-self: flex-start;
+            background-color: #e06d3b; /* Beautiful burnt orange */
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 6px rgba(224, 109, 59, 0.2);
+        }
+
+        .book-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.3;
+        }
+
+        /* Book Image Wrapper */
+        .book-img-wrapper {
+            width: 100%;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid #f0eae1;
+        }
+
+        .book-img-wrapper img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* Affiliate Action Buttons */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+        }
+
+        .btn-shopee {
+            background-color: #ff4500; /* Shopee Orange */
+            color: #ffffff;
+        }
+
+        .btn-tiktok {
+            background-color: #010101; /* TikTok Black */
+            color: #ffffff;
+        }
+
+        /* Footer Copy Link Action */
+        .footer-action {
+            text-align: center;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .copy-link-btn {
+            background: none;
+            border: none;
+            color: #7d7568;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Toast notification when link is copied */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+        
+        <!-- Profile Section Card -->
+        <div class="profile-card">
+            <div class="avatar-container">
+                📚
+            </div>
+            <h1 class="profile-title">
+                Góc Đầu Tư Tri Thức <span class="verified-badge"></span>
+            </h1>
+            <div class="username">@dautuchonhaban</div>
+            <p class="bio-text">
+                "Có 1 triệu đồng thì kinh doanh gì hời nhất? Đầu tư vào bộ não của bạn chính là thương vụ chắc chắn sinh lời 100%!"
+            </p>
+            
+            <!-- Social Buttons -->
+            <div class="social-row">
+                <a href="#" class="social-btn" title="Facebook">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/></svg>
+                </a>
+                <a href="#" class="social-btn" title="TikTok">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-1.01-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-2.22.08-4.52-.76-6.01-2.43-1.65-1.77-2.31-4.32-1.84-6.72.4-2.11 1.73-4.04 3.65-4.98 1.05-.53 2.21-.78 3.39-.77v4.06c-.84-.02-1.72.18-2.42.68-.81.54-1.25 1.51-1.25 2.48.02 1.09.56 2.14 1.48 2.71.93.62 2.15.68 3.12.17.84-.42 1.34-1.3 1.36-2.24.03-3.55-.02-7.1.02-10.65z"/></svg>
+                </a>
+                <a href="mailto:contact@example.com" class="social-btn" title="Email">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Book Product Card -->
+        <div class="product-card">
+            <span class="best-seller-badge">
+                🔥 Best-Seller
+            </span>
+            <h2 class="book-title">Cha Giàu Cha Nghèo (Tập 1) - Robert T. Kiyosaki</h2>
+            
+            <div class="book-img-wrapper">
+                <!-- Utilizing our beautiful AI generated book image -->
+                <img src="watermarked_img_918207214440961919.png" alt="Sách Cha Giàu Cha Nghèo Tập 1">
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-container">
+                <a href="YOUR_SHOPEE_AFFILIATE_LINK_HERE" class="action-button btn-shopee" target="_blank">
+                    🛒 Mua Trên Shopee (Áp Mã Freeship)
+                </a>
+                <a href="YOUR_TIKTOK_AFFILIATE_LINK_HERE" class="action-button btn-tiktok" target="_blank">
+                    🎬 Mua Trên TikTok Shop (Voucher 50k)
+                </a>
+            </div>
+        </div>
+
+        <!-- Copy Link Footer Option -->
+        <div class="footer-action">
+            <button class="copy-link-btn" onclick="copyBioLink()">Sao chép đường dẫn trang cá nhân</button>
+        </div>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Đã copy link trang Bio!</div>
+
+    <script>
+        function copyBioLink() {
+            const el = document.createElement('textarea');
+            el.value = window.location.href;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
