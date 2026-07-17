@@ -1,0 +1,5 @@
+body { background-color: #faf6f0; color: #2e2620; font-family: 'Quicksand', sans-serif; }
+.font-serif { font-family: 'Playfair Display', serif; }
+.product-card { background: #fff; border-radius: 16px; overflow: hidden; transition: 0.3s; border: 1px solid #e5e0dc; }
+.product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.btn-buy { background: #a63f3a; color: white; width: 100%; padding: 12px; font-weight: bold; border-radius: 8px; text-align: center; display: block; }
