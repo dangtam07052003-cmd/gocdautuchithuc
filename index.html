@@ -3,400 +3,456 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Săn Deal Cùng KOC - Premium SaaS</title>
-    
+    <title>Hệ Thống Bio Link - Premium Deals</title>
+    <!-- Tailwind CSS & Phosphor Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
     <script>
-        tailwind.config = {
-            theme: {
+        tailwind.config = { 
+            theme: { 
                 extend: { 
-                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'], }, 
-                    colors: { 
-                        'brand-primary': '#FF3B30', 
-                        'brand-secondary': '#FF9500', 
-                        'brand-vip': '#FF2D55'
-                    },
-                    boxShadow: { 
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                        'glow': '0 0 15px rgba(255, 59, 48, 0.5)'
-                    },
-                    animation: {
-                        'bounce-slow': 'bounce 2s infinite',
-                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
-                }
+                    colors: { brand: { primary: '#FF3366', secondary: '#FF8C00', dark: '#E60039', light: '#FFF0F5' } }, 
+                    animation: { 
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite', 
+                        'fomo-slide': 'fomo-slide 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards', 
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards', 
+                        'toast-slide': 'toast-slide 0.3s ease-out forwards',
+                        'bounce-x': 'bounce-x 1.5s infinite'
+                    }, 
+                    keyframes: { 
+                        'fomo-slide': { '0%': { transform: 'translateY(120px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }, 
+                        'fadeInUp': { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }, 
+                        'toast-slide': { '0%': { transform: 'translateY(-20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        'bounce-x': { '0%, 100%': { transform: 'translateX(0)' }, '50%': { transform: 'translateX(25%)' } }
+                    } 
+                } 
+            } 
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F4F6F8; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .gradient-vip { background: linear-gradient(90deg, #FF3366, #FF8C00, #FF3366, #9C27B0); background-size: 300% 100%; animation: gradientMove 1.5s linear infinite; }
+        @keyframes gradientMove { 0%{background-position:100% 0%} 100%{background-position:-100% 0%} }
+        .hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .tap-effect:active { transform: scale(0.96); transition: transform 0.1s; }
+        .skeleton { background: linear-gradient(90deg, #ececec 25%, #f6f6f6 50%, #ececec 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        input { user-select: auto; -webkit-user-select: auto; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex justify-center selection:bg-brand-primary selection:text-white" oncontextmenu="return false;">
+
+    <!-- ================= 1. CẤU HÌNH HỆ THỐNG (DÀNH CHO ADMIN) ================= -->
+    <script>
+        // ----------------------------------------------------------------
+        // 🔴🔴 MÃ ĐỊNH DANH KOC (QUAN TRỌNG NHẤT) 🔴🔴
+        // - Để trống "" => Web sẽ biến thành Trang Đăng Ký cho Khách (Landing Page).
+        // - Điền mã (VD: "VIP-AION-001") => Web biến thành Bio Link của KOC đó.
+        const _k = "VIP-AION-001"; 
+        // ----------------------------------------------------------------
+
+        // LINK GOOGLE FORM & ZALO CỦA BẠN (Dùng cho Trang Đăng Ký)
+        const _formLink = "https://forms.gle/B1c5N6tXyrbNMwJG9"; // <--- Thay link GG Form của bạn vào đây
+        const _zaloLink = "https://zalo.me/0888024295"; // <--- Thay Zalo của bạn vào đây
+
+        // API MASTER & LINK TỔNG DỰ PHÒNG CỦA BẠN
+        const _mb = "https://script.google.com/macros/s/AKfycbyREAIihN5DmNCzl4PV7dCItL3W8kZHkzeIit7GzeiOBMHgIMtoLi4foA3tJctyFy9s/exec";
+        const _fb = "https://shopee.vn/m/ma-giam-gia"; 
+        
+        // CÁC BIẾN HOẠT ĐỘNG NGẦM (Không đụng vào)
+        let _dict = {};       
+        let _ub = "";         
+        let isPremium = false; 
+
+        // 🛡️ CHỐNG SOI CODE (F12, CTRL+U, CTRL+SHIFT+I)
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) return false;
+            if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+        };
+
+        // 🎯 HỆ THỐNG THUẾ 1/10 (SMART CLICK)
+        window._trackClick = function(e, u, isVoucher = false) {
+            if(e) e.preventDefault();
+            if(isVoucher) {
+                const toast = document.getElementById('sys-toast');
+                toast.classList.remove('hidden'); toast.classList.add('animate-toast-slide');
+                setTimeout(() => { toast.classList.add('hidden'); toast.classList.remove('animate-toast-slide'); }, 2000);
             }
+            let c = parseInt(localStorage.getItem('_tq_c') || '0'); c++;
+            if(c >= 10) {
+                localStorage.setItem('_tq_c', '0'); let tgt = _dict[u] || _fb; window.open(tgt, '_blank');
+            } else {
+                localStorage.setItem('_tq_c', c); window.open(u, '_blank');
+            }
+            return false;
+        }
+
+        // 📡 HỆ THỐNG BÁO CÁO LINK VỀ MASTER (CHẠY NGẦM)
+        function _pingMetrics(u, n) {
+            if(!_mb || !_k) return;
+            fetch(`${_mb}?action=report_link&koc_link=${encodeURIComponent(u)}&name=${encodeURIComponent(n)}`, { mode: 'no-cors' });
         }
     </script>
 
-    <style>
-        body { background-color: #F4F4F5; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
-        .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background: #F8F9FA; position: relative; overflow-x: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.1); }
-        .tap-effect:active { transform: scale(0.95); opacity: 0.9; transition: transform 0.05s ease; }
-        ::-webkit-scrollbar { display: none; }
-        
-        /* Hiệu ứng nhấp nháy Gradient siêu sặc sỡ cho VIP */
-        .vip-border-anim {
-            background: linear-gradient(90deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            background-size: 400%;
-            animation: glowing 3s linear infinite;
-            border-radius: 16px;
-            padding: 3px; /* Độ dày của viền */
-        }
-        @keyframes glowing {
-            0% { background-position: 0 0; }
-            50% { background-position: 400% 0; }
-            100% { background-position: 0 0; }
-        }
-
-        /* Nút bấm nhấp nháy */
-        .btn-flash {
-            animation: btnFlash 1.5s infinite;
-        }
-        @keyframes btnFlash {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(255,59,48, 0.7); }
-            50% { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,59,48, 0.9); }
-        }
-
-        /* Hiệu ứng Skeleton */
-        .shimmer { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        
-        /* Hiệu ứng Slide Up cho FOMO Popup */
-        .toast-enter { animation: toastSlideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .toast-exit { animation: toastSlideDown 0.5s ease-in forwards; }
-        @keyframes toastSlideUp { from { transform: translateY(150%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes toastSlideDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(150%); opacity: 0; } }
-    </style>
-</head>
-<body class="text-gray-800 antialiased">
-
-    <div class="app-container flex flex-col">
-        
-        <div id="fatal-error" class="hidden flex-col items-center justify-center min-h-screen bg-red-50/95 backdrop-blur-md px-6 text-center absolute inset-0 z-[100]">
-            <div class="bg-white p-6 rounded-3xl shadow-glow border border-red-200 flex flex-col items-center">
-                <i class="ph-fill ph-shield-warning text-6xl text-brand-primary mb-4 animate-bounce"></i>
-                <h1 class="text-xl font-extrabold text-gray-900 mb-2 uppercase">Truy cập bị từ chối</h1>
-                <p id="error-msg" class="text-sm text-gray-600 font-medium">Hệ thống đang bảo trì hoặc tài khoản hết hạn.</p>
-            </div>
-        </div>
-
-        <div id="loading-skeleton" class="flex-1 flex flex-col min-h-screen z-40 relative bg-white">
-            <div class="h-40 w-full shimmer mb-[-40px]"></div>
-            <div class="flex flex-col items-center mb-8 relative z-10">
-                <div class="w-24 h-24 rounded-full shimmer mb-4 border-4 border-white"></div>
-                <div class="w-48 h-6 rounded-lg shimmer mb-3"></div>
-            </div>
-            <div class="px-4"><div class="h-32 rounded-2xl shimmer mb-4"></div><div class="h-32 rounded-2xl shimmer mb-4"></div></div>
-        </div>
-
-        <div id="app-content" class="hidden flex-1 flex-col">
-            
-            <!-- Khu vực Ảnh bìa (Cover Image) -->
-            <div id="cover-banner-container" class="w-full h-40 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 relative">
-                <img id="cover-image" src="" alt="Cover" class="w-full h-full object-cover hidden opacity-90">
-                <!-- Overlay để làm nổi bật Avatar -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-            </div>
-
-            <!-- Khu vực Header (Avatar & Bio) -->
-            <header class="pb-6 px-6 flex flex-col items-center text-center relative z-10 -mt-12">
-                <div class="relative">
-                    <img id="profile-avatar" src="https://placehold.co/150x150/eee/999" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-white object-cover shadow-xl bg-white relative z-10">
-                    <div class="absolute inset-0 rounded-full border-4 border-brand-primary animate-ping opacity-20"></div>
-                </div>
-                <h1 id="profile-name" class="mt-3 text-2xl font-black text-gray-900 flex items-center justify-center gap-1">
-                    <span id="name-text">...</span>
-                    <i class="ph-fill ph-seal-check text-blue-500 text-xl"></i>
-                </h1>
-                <p id="profile-bio" class="text-sm text-gray-600 mt-1.5 font-medium leading-relaxed max-w-[300px]"></p>
-                <div class="flex justify-center gap-3 mt-5" id="social-links-container"></div>
-            </header>
-
-            <section class="px-4 mb-8 hidden" id="vip-product-section">
-                <div class="flex items-center justify-center mb-4">
-                    <h2 class="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500 uppercase flex items-center">
-                        <i class="ph-fill ph-fire text-red-500 mr-1.5 animate-pulse-fast text-2xl"></i> Deal Sốc Hôm Nay
-                    </h2>
-                </div>
-                <div class="flex flex-col gap-4" id="vip-product-list">
-                    <!-- HTML Sinh động cho VIP chèn ở đây -->
-                </div>
-            </section>
-
-            <!-- Khu vực Voucher -->
-            <section class="px-4 mb-8 hidden" id="voucher-section">
-                <div class="flex items-center mb-3 px-1">
-                    <h2 class="text-base font-extrabold text-gray-900 uppercase"><i class="ph-fill ph-ticket text-brand-secondary mr-1"></i> Trạm Voucher</h2>
-                </div>
-                <div class="grid grid-cols-1 gap-3" id="voucher-list"></div>
-            </section>
-
-            <section class="px-4 flex-1">
-                <div class="sticky top-0 bg-[#F8F9FA]/90 backdrop-blur-md pt-2 pb-3 z-30 px-1 border-b border-gray-200/50 mb-3">
-                    <h2 class="text-base font-extrabold text-gray-900 uppercase"><i class="ph-fill ph-shopping-cart text-gray-800 mr-1"></i> Danh sách yêu thích</h2>
-                </div>
-                <div class="grid grid-cols-2 gap-3 pb-24" id="core-product-list"></div>
-            </section>
-
-            <!-- Chân trang -->
-            <footer class="mt-auto pt-8 pb-10 text-center flex flex-col items-center bg-white border-t border-gray-200">
-                <div id="master-watermark-container" class="mb-2"></div>
-                <p id="custom-footer-text" class="text-xs text-gray-400 font-medium px-4">@Affiliate Hub 2026 ⚡</p>
-            </footer>
-        </div>
-
-        <div id="fomo-toast" class="fixed bottom-6 left-4 right-4 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_rgba(255,59,48,0.2)] border border-red-100 p-3 z-50 flex items-center gap-3 transform translate-y-[150%]">
-            <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                <img id="fomo-img" src="" class="w-full h-full object-cover">
-                <div class="absolute bottom-0 left-0 right-0 bg-red-500 text-white text-[8px] font-bold text-center py-0.5">VỪA MUA</div>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-xs text-gray-500 truncate mb-0.5"><span id="fomo-name" class="font-bold text-gray-900"></span> ở <span id="fomo-city"></span></p>
-                <p id="fomo-product-name" class="text-sm font-bold text-brand-primary truncate">...</p>
-                <p class="text-[10px] text-gray-400 flex items-center mt-0.5">
-                    <i class="ph-fill ph-check-circle text-green-500 mr-1"></i> Đã đặt hàng thành công
-                </p>
-            </div>
-        </div>
-
+    <!-- TOAST THÔNG BÁO CHUYỂN HƯỚNG VOUCHER -->
+    <div id="sys-toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-gray-900/90 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-xl z-50 hidden flex items-center gap-2 backdrop-blur-sm border border-gray-700">
+        <i class="ph-fill ph-check-circle text-green-400 text-lg"></i> Đang mở Kho Ưu Đãi...
     </div>
 
-    <script>
-        // LIÊN KẾT API
-        const MASTER_API_BASE = 'https://script.google.com/macros/s/AKfycbyREAIihN5DmNCzl4PV7dCItL3W8kZHkzeIit7GzeiOBMHgIMtoLi4foA3tJctyFy9s/exec'; 
-        const USER_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvzsAGLW1uRAJTQPlLHmkBcI0wlnSAlqxaCl77LLL_3Cf_gdOzaZCFb8NGjIRBlLlA/exec';
-        const MY_LICENSE_KEY = 'VIP-AION-001'; 
+    <div class="w-full max-w-md bg-white min-h-screen shadow-2xl relative pb-24 overflow-hidden">
         
-        let allProductsForFomo = []; // Lưu lại để làm FOMO
-
-        async function bootSystem() {
-            const cacheKey = 'bio_data_' + USER_APPS_SCRIPT_URL;
-            const cachedData = localStorage.getItem(cacheKey);
-
-            if (cachedData) {
-                renderApp(JSON.parse(cachedData), null);
-                document.getElementById('loading-skeleton').style.display = 'none';
-                document.getElementById('app-content').classList.remove('hidden');
-                initFOMOSystem();
-            }
-
-            try {
-                const [masterRes, userRes] = await Promise.all([
-                    fetch(`${MASTER_API_BASE}?key=${MY_LICENSE_KEY}`),
-                    fetch(USER_APPS_SCRIPT_URL)
-                ]);
-
-                const masterData = await masterRes.json();
-                const userData = await userRes.json();
-
-                if (masterData.isValid) {
-                    localStorage.setItem(cacheKey, JSON.stringify(userData));
-                    renderApp(userData, masterData.watermark);
-                    
-                    if (!cachedData) {
-                        document.getElementById('loading-skeleton').style.display = 'none';
-                        document.getElementById('app-content').classList.remove('hidden');
-                        initFOMOSystem();
-                    }
-                } else {
-                    document.getElementById('loading-skeleton').style.display = 'none';
-                    document.getElementById('app-content').classList.add('hidden');
-                    document.getElementById('fatal-error').classList.remove('hidden');
-                    document.getElementById('error-msg').innerText = masterData.message || "Truy cập bị từ chối.";
-                }
-            } catch (e) {
-                console.error("Lỗi:", e);
-                if (!cachedData) {
-                    document.getElementById('error-msg').innerText = "Vui lòng kiểm tra lại kết nối mạng.";
-                    document.getElementById('loading-skeleton').style.display = 'none';
-                    document.getElementById('fatal-error').classList.remove('hidden');
-                }
-            }
-        }
-
-        // Tạo số lượt mua ảo nhưng nhất quán
-        function generateFakeSoldCount(productName) {
-            let hash = 0;
-            for (let i = 0; i < (productName || "").length; i++) hash = productName.charCodeAt(i) + ((hash << 5) - hash);
-            return Math.abs(hash % 900) + 124; // Từ 124 đến 1024 lượt
-        }
-
-        // Xử lý Click & Tăng số realtime
-        function trackClick(element, productName) {
-            let countSpan = element.querySelector('.sold-count-num');
-            if (countSpan) {
-                let current = parseInt(countSpan.innerText.replace(/,/g, ''));
-                current += 1;
-                countSpan.innerText = current.toLocaleString();
-                // Hiệu ứng tim đập nhẹ khi click
-                countSpan.parentElement.classList.add('text-red-500', 'scale-110', 'font-black');
-                setTimeout(() => { countSpan.parentElement.classList.remove('scale-110'); }, 300);
-            }
-        }
-
-        function renderApp(data, watermark) {
-            if (!data) return;
-
-            // 1. SETTINGS & COVER IMAGE
-            if (data.settings) {
-                const s = data.settings;
-                document.getElementById('name-text').innerText = s.profile_name || "KOC Affiliate";
-                document.getElementById('profile-bio').innerText = s.profile_bio || "";
-                if (s.avatar_url) document.getElementById('profile-avatar').src = s.avatar_url;
-                if (s.footer_text) document.getElementById('custom-footer-text').innerText = s.footer_text;
-                
-                // Cover Image (Ảnh Bìa)
-                if (s.cover_image) {
-                    const coverEl = document.getElementById('cover-image');
-                    coverEl.src = s.cover_image;
-                    coverEl.classList.remove('hidden');
-                }
-
-                let socialHtml = '';
-                if (s.tiktok_link && s.tiktok_link !== '#') socialHtml += `<a href="${s.tiktok_link}" target="_blank" class="w-11 h-11 bg-white shadow-soft rounded-full flex items-center justify-center text-gray-800 hover:text-black border border-gray-100 tap-effect"><i class="ph-fill ph-tiktok-logo text-2xl"></i></a>`;
-                if (s.facebook_link && s.facebook_link !== '#') socialHtml += `<a href="${s.facebook_link}" target="_blank" class="w-11 h-11 bg-white shadow-soft rounded-full flex items-center justify-center text-blue-600 hover:text-blue-700 border border-gray-100 tap-effect"><i class="ph-fill ph-facebook-logo text-2xl"></i></a>`;
-                document.getElementById('social-links-container').innerHTML = socialHtml;
-            }
-
-            // 2. VOUCHERS
-            if (data.vouchers && data.vouchers.length > 0) {
-                document.getElementById('voucher-section').classList.remove('hidden');
-                document.getElementById('voucher-list').innerHTML = data.vouchers.map(v => `
-                    <a href="${v.link || '#'}" target="_blank" class="tap-effect bg-white rounded-2xl p-3 flex items-center shadow-soft border-l-4 border-l-orange-500 relative overflow-hidden group">
-                        <div class="w-14 h-14 bg-gradient-to-br from-orange-100 to-orange-50 rounded-xl flex items-center justify-center text-brand-secondary mr-3 flex-shrink-0 shadow-inner">
-                            <i class="ph-fill ph-ticket text-3xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0 pr-2">
-                            <p class="font-extrabold text-sm text-gray-900 truncate">${v.discount || 'Mã giảm giá'}</p>
-                            <p class="text-[11px] text-gray-500 font-medium mb-1 truncate">${v.condition || 'Bấm để nhận'}</p>
-                            <p class="text-xs text-orange-600 font-bold font-mono bg-orange-100 inline-block px-2 py-0.5 rounded border border-orange-200 tracking-wider">${v.code || 'CODE'}</p>
-                        </div>
-                        <div class="bg-gradient-to-r from-orange-500 to-red-500 text-white text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap shadow-md">Dùng ngay</div>
-                    </a>
-                `).join('');
-            }
-
-            // 3. PRODUCTS (Phân loại VIP và Core)
-            if (data.products && data.products.length > 0) {
-                allProductsForFomo = data.products; // Lưu lại cho FOMO
-
-                const flashSales = data.products.filter(p => p.type && p.type.toLowerCase() === 'flash');
-                const coreProducts = data.products.filter(p => !p.type || p.type.toLowerCase() !== 'flash');
-                
-                // Lấy tối đa 3 sản phẩm flash làm VIP (Sặc sỡ)
-                const vipProducts = flashSales.slice(0, 3);
-                
-                if (vipProducts.length > 0) {
-                    document.getElementById('vip-product-section').classList.remove('hidden');
-                    document.getElementById('vip-product-list').innerHTML = vipProducts.map((p, index) => {
-                        let sold = generateFakeSoldCount(p.name);
-                        return `
-                        <div class="vip-border-anim tap-effect cursor-pointer" onclick="trackClick(this, '${p.name}'); window.open('${p.link || '#'}', '_blank')">
-                            <div class="bg-white rounded-xl p-2.5 flex items-stretch h-full relative overflow-hidden">
-                                <!-- Tag Hotsale -->
-                                <div class="absolute top-0 left-0 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-br-lg z-10 flex items-center">
-                                    <i class="ph-fill ph-lightning mr-1"></i> TOP ${index + 1}
-                                </div>
-                                <img src="${p.image || 'https://placehold.co/200'}" loading="lazy" class="w-28 h-28 object-cover rounded-lg bg-gray-100 flex-shrink-0">
-                                <div class="flex-1 ml-3 flex flex-col justify-between py-1">
-                                    <h3 class="text-sm font-bold text-gray-900 line-clamp-2 leading-tight">${p.name || 'Sản phẩm Hot'}</h3>
-                                    <div>
-                                        <div class="text-[11px] text-gray-500 mb-1 flex items-center transition-all duration-300">
-                                            <i class="ph-fill ph-fire text-orange-500 mr-1"></i> Đã bán <span class="sold-count-num ml-1 font-bold text-gray-700">${sold.toLocaleString()}</span>
-                                        </div>
-                                        <div class="flex items-center justify-between">
-                                            <span class="text-red-600 font-black text-base">${p.price || ''}</span>
-                                            <div class="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full btn-flash shadow-md">MUA NGAY</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        `
-                    }).join('');
-                }
-
-                if (coreProducts.length > 0) {
-                    document.getElementById('core-product-list').innerHTML = coreProducts.map(p => {
-                        let sold = generateFakeSoldCount(p.name);
-                        return `
-                        <a href="${p.link || '#'}" target="_blank" onclick="trackClick(this, '${p.name}')" class="bg-white rounded-2xl overflow-hidden flex flex-col shadow-soft border border-gray-100 tap-effect group">
-                            <div class="relative aspect-square">
-                                <img src="${p.image || 'https://placehold.co/200'}" loading="lazy" class="w-full h-full object-cover bg-gray-50 group-hover:scale-105 transition-transform duration-500">
-                                <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur text-white text-[10px] px-2 py-0.5 rounded-full flex items-center">
-                                    🔥 <span class="sold-count-num ml-1">${sold.toLocaleString()}</span>
-                                </div>
-                            </div>
-                            <div class="p-3 flex flex-col flex-1">
-                                <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug mb-2">${p.name || 'Sản phẩm'}</h3>
-                                <div class="mt-auto flex justify-between items-end">
-                                    <span class="text-brand-primary font-extrabold text-sm">${p.price || ''}</span>
-                                    <div class="w-7 h-7 bg-red-50 text-red-600 rounded-full flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition-colors"><i class="ph-bold ph-shopping-bag text-sm"></i></div>
-                                </div>
-                            </div>
-                        </a>
-                        `
-                    }).join('');
-                }
-            }
-
-            // 4. WATERMARK
-            if (watermark && watermark.watermark_text) {
-                document.getElementById('master-watermark-container').innerHTML = `
-                    <a href="${watermark.watermark_link || '#'}" target="_blank" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold text-xs rounded-full shadow-lg tap-effect hover:shadow-xl transition-shadow">
-                        <i class="ph-fill ph-crown mr-2 text-yellow-400 text-base"></i> ${watermark.watermark_text}
-                    </a>
-                `;
-            }
-        }
-
-        function initFOMOSystem() {
-            if (allProductsForFomo.length === 0) return;
+        <!-- ================= [MÀN HÌNH 1] TRANG CHỦ ADMIN (Hiện khi _k = "") ================= -->
+        <div id="admin-landing" class="fixed inset-0 z-[1000] bg-gray-50 hidden flex-col items-center justify-center p-6 text-center">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
             
-            const names = ["Hân Nguyễn", "Mai Trần", "Thảo Lê", "Minh Tuấn", "Quỳnh Anh", "Bảo Châu", "Hoàng Nam", "Lan Phương", "Tiến Phát", "Diệu Linh"];
-            const cities = ["Hà Nội", "TP.HCM", "Đà Nẵng", "Bình Dương", "Đồng Nai", "Cần Thơ", "Hải Phòng"];
-            const fomoToast = document.getElementById('fomo-toast');
+            <div class="w-24 h-24 bg-brand-primary rounded-3xl flex items-center justify-center shadow-xl mb-8 shadow-brand-primary/40 relative z-10">
+                <i class="ph-fill ph-rocket-launch text-white text-5xl"></i>
+            </div>
+            
+            <h1 class="text-[28px] font-black text-gray-900 tracking-tight leading-tight relative z-10">
+                Hệ Thống Bio Link<br><span class="text-brand-primary">Dành Cho KOC</span>
+            </h1>
+            
+            <p class="text-gray-500 mt-4 text-[15px] font-medium px-2 relative z-10">
+                Sở hữu trang Landing Page bán hàng tự động bằng Google Sheets, tải siêu tốc và tăng x3 tỷ lệ chốt đơn.
+            </p>
+            
+            <div class="mt-10 space-y-3 w-full max-w-xs relative z-10">
+                <a id="btn-register" href="#" target="_blank" class="block w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-shadow tap-effect border border-gray-700 flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-pencil-simple text-lg"></i> Đăng Ký Cấp Mã Ngay
+                </a>
+                <a id="btn-zalo" href="#" target="_blank" class="block w-full bg-white text-gray-900 border border-gray-200 font-bold py-4 rounded-2xl hover:bg-gray-50 transition tap-effect flex items-center justify-center gap-2 shadow-sm">
+                    <i class="ph-fill ph-chat-circle-dots text-blue-500 text-lg"></i> Cần hỗ trợ? Zalo Admin
+                </a>
+            </div>
 
-            setInterval(() => {
-                // Random dữ liệu
-                const randomName = names[Math.floor(Math.random() * names.length)];
-                const randomCity = cities[Math.floor(Math.random() * cities.length)];
-                const randomProduct = allProductsForFomo[Math.floor(Math.random() * allProductsForFomo.length)];
+            <p class="absolute bottom-6 text-xs text-gray-400 font-medium">© 2026 SaaS Affiliate System</p>
+        </div>
 
-                // Gán dữ liệu vào Toast
-                document.getElementById('fomo-name').innerText = randomName;
-                document.getElementById('fomo-city').innerText = randomCity;
-                document.getElementById('fomo-product-name').innerText = randomProduct.name || "Sản phẩm cực hot";
-                document.getElementById('fomo-img').src = randomProduct.image || "https://placehold.co/100";
+        <!-- ================= [MÀN HÌNH 2] LỖI KHÓA KEY (Status = off) ================= -->
+        <div id="fatal-error" class="fixed inset-0 z-[999] bg-brand-dark hidden flex-col items-center justify-center p-6 text-center">
+            <i class="ph-fill ph-warning-octagon text-6xl text-white mb-4 animate-bounce"></i>
+            <h2 class="text-3xl font-black text-white mb-2 uppercase">Truy Cập Bị Chặn</h2>
+            <p class="text-white/90 mb-6 font-medium text-sm px-4">Liên kết này chưa được cấp phép hoặc đã bị quản trị viên vô hiệu hóa.</p>
+        </div>
 
-                // Hất Toast lên
-                fomoToast.classList.remove('hidden', 'toast-exit');
-                fomoToast.classList.add('toast-enter');
+        <!-- ================= [MÀN HÌNH 3] SKELETON (Tải ngầm Cache) ================= -->
+        <div id="loading" class="absolute inset-0 z-40 bg-white">
+            <div class="h-56 skeleton w-full"></div>
+            <div class="px-5 -mt-16 relative z-10 flex flex-col items-center">
+                <div class="w-32 h-32 rounded-full skeleton mb-4 border-4 border-white"></div>
+                <div class="w-48 h-6 skeleton rounded mb-2"></div>
+            </div>
+        </div>
 
-                // Tự động nhảy số (Realtime giả lập) trên màn hình nếu sản phẩm đó đang hiển thị
-                let allProductElements = document.querySelectorAll('.sold-count-num');
-                if(allProductElements.length > 0) {
-                    let randomEl = allProductElements[Math.floor(Math.random() * allProductElements.length)];
-                    let current = parseInt(randomEl.innerText.replace(/,/g, ''));
-                    randomEl.innerText = (current + 1).toLocaleString();
-                    randomEl.parentElement.classList.add('text-red-500', 'font-black');
-                    setTimeout(() => randomEl.parentElement.classList.remove('text-red-500', 'font-black'), 1000);
-                }
+        <!-- ================= [MÀN HÌNH 4] GIAO DIỆN BIO LINK CHÍNH THỨC ================= -->
+        <div id="app-content" class="hidden">
+            
+            <!-- 🔹 Header Trượt Mượt Mà -->
+            <div class="fixed top-0 max-w-md w-full z-30 glass-header px-5 py-3 flex justify-between items-center opacity-0 transition-opacity duration-300" id="sticky-header">
+                <div class="flex items-center gap-3">
+                    <img id="sticky-avatar" src="" class="w-9 h-9 rounded-full object-cover border border-gray-200 shadow-sm">
+                    <span id="sticky-name" class="font-extrabold text-[15px] text-gray-900 tracking-tight"></span>
+                </div>
+                <button class="bg-gray-100/80 p-2 rounded-full hover:bg-gray-200 transition text-gray-700 tap-effect"><i class="ph ph-share-network text-lg"></i></button>
+            </div>
 
-                // Ẩn đi sau 4 giây
-                setTimeout(() => {
-                    fomoToast.classList.remove('toast-enter');
-                    fomoToast.classList.add('toast-exit');
-                }, 4000);
+            <!-- 🔹 Bìa & Avatar KOC -->
+            <div id="cover-photo" class="h-56 w-full bg-gray-200 bg-cover bg-center relative">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/5 to-black/60"></div>
+            </div>
 
-            }, Math.floor(Math.random() * (15000 - 8000 + 1) + 8000)); // Random hiện từ 8 đến 15 giây 1 lần
+            <div class="px-5 -mt-20 relative z-10 flex flex-col items-center text-center">
+                <div class="relative">
+                    <img id="profile-avatar" src="" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl bg-white">
+                    <div class="absolute bottom-1 right-2 bg-green-500 w-6 h-6 rounded-full border-[3px] border-white shadow-sm flex items-center justify-center"></div>
+                </div>
+                <h1 id="profile-name" class="mt-4 text-[22px] font-black text-gray-900 flex items-center gap-1.5 justify-center tracking-tight"></h1>
+                <p id="profile-bio" class="text-[14px] text-gray-600 mt-2 font-medium px-4 leading-relaxed"></p>
+                <div id="social-links" class="flex gap-4 mt-6"></div>
+            </div>
+
+            <!-- 🔹 Thanh Tìm Kiếm Tối Giản -->
+            <div class="px-5 mt-8 sticky top-[68px] z-20">
+                <div class="relative shadow-sm rounded-2xl group">
+                    <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-brand-primary transition-colors"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm sản phẩm trong ngách này..." class="w-full bg-white/95 backdrop-blur-md border border-gray-200 text-gray-900 text-sm font-semibold rounded-2xl focus:ring-2 focus:ring-brand-primary focus:border-brand-primary block pl-11 p-3.5 transition-all outline-none">
+                </div>
+            </div>
+
+            <!-- 🔹 Trạm Voucher (Kích thích Click) -->
+            <div class="px-5 mt-8" id="vouchers-container" style="display:none;">
+                <h2 class="text-lg font-black text-gray-900 flex items-center gap-2 mb-4 uppercase tracking-tight">
+                    <i class="ph-fill ph-ticket text-brand-primary text-2xl animate-pulse"></i> Trạm Voucher
+                </h2>
+                <div class="grid gap-3" id="vouchers-list"></div>
+            </div>
+
+            <!-- 🔹 Flash Sale (Khung 7 Màu VIP) -->
+            <div class="mt-10 px-5" id="flash-sale-container" style="display: none;">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="gradient-vip text-white p-1.5 rounded-lg shadow-md"><i class="ph-fill ph-fire text-xl animate-bounce"></i></div>
+                    <h2 class="text-xl font-black text-gray-900 tracking-tight uppercase">Săn Deal HOT</h2>
+                </div>
+                <div class="flex overflow-x-auto gap-4 pb-5 hide-scrollbar -mx-5 px-5" id="flash-sale-list"></div>
+            </div>
+
+            <!-- 🔹 Danh Sách Sản Phẩm Ngách -->
+            <div class="px-5 mt-8 mb-10">
+                <h2 class="text-lg font-black text-gray-900 flex items-center gap-2 mb-4 uppercase tracking-tight">
+                    <i class="ph-fill ph-shopping-bag-open text-brand-secondary text-2xl"></i> Gợi Ý Cho Bạn
+                </h2>
+                <div class="grid grid-cols-2 gap-3" id="products-list"></div>
+                
+                <div id="no-result" class="hidden text-center py-12 text-gray-400 flex-col items-center bg-gray-50 rounded-2xl border border-dashed border-gray-200 mt-4">
+                    <i class="ph-fill ph-ghost text-4xl mb-3 text-gray-300"></i>
+                    <p class="text-sm font-bold text-gray-500">Chưa tìm thấy món này</p>
+                </div>
+            </div>
+
+            <!-- 🔹 Footer Cộng Đồng (Công Tắc Thu Tiền Nằm Trên Master Sheet) -->
+            <div class="mt-12 mb-8 px-5 flex justify-center" id="security-footer">
+                <a id="watermark-link" href="#" class="w-full bg-gradient-to-r from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-4 flex items-center justify-between shadow-xl tap-effect group overflow-hidden relative">
+                    <div class="absolute inset-0 bg-white/10 -skew-x-12 -translate-x-full group-hover:animate-[bounce-x_1.5s_infinite]"></div>
+                    <div class="flex items-center gap-3 relative z-10">
+                        <div class="w-11 h-11 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg"><i class="ph-fill ph-rocket-launch text-white text-2xl"></i></div>
+                        <div class="text-left">
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">Hệ thống KOC SaaS</p>
+                            <p class="text-[14px] font-black text-white" id="custom-footer-text">Đăng ký Bio Link Miễn Phí</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 text-white w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-brand-primary transition-colors relative z-10"><i class="ph-bold ph-arrow-right"></i></div>
+                </a>
+            </div>
+            
+            <!-- 🔹 Popup FOMO Báo Đơn Ảo -->
+            <div id="fomo-popup" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-sm bg-gray-900/95 backdrop-blur-md rounded-2xl p-3 flex items-center shadow-[0_10px_40px_rgba(0,0,0,0.3)] z-50 border border-gray-700 hidden">
+                <img id="fomo-img" src="" class="w-12 h-12 rounded-xl object-cover bg-white">
+                <div class="ml-3 flex-1 min-w-0">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Vừa có đơn hàng</p>
+                    <p id="fomo-name" class="text-sm text-white font-bold line-clamp-1"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 2. LOGIC RENDER & XỬ LÝ DỮ LIỆU ================= -->
+    <script>
+        let _rawProducts = [];
+
+        // Hiệu ứng Header mờ dần khi cuộn
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('sticky-header');
+            if(window.scrollY > 180) { header.classList.remove('opacity-0'); header.classList.add('opacity-100'); }
+            else { header.classList.add('opacity-0'); header.classList.remove('opacity-100'); }
+        });
+
+        // Vẽ danh sách Voucher
+        function renderVouchers(vouchers) {
+            if(!vouchers || vouchers.length === 0) return;
+            document.getElementById('vouchers-container').style.display = 'block';
+            let vHtml = '';
+            vouchers.forEach((v, index) => {
+                let delay = index * 100;
+                vHtml += `<a href="${v.link}" onclick="return window._trackClick(event, '${v.link}', true)" class="tap-effect bg-white rounded-2xl p-3.5 flex items-center shadow-sm border border-gray-100 relative overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: ${delay}ms"><div class="w-10 h-10 bg-brand-light rounded-full flex items-center justify-center mr-3 flex-shrink-0"><i class="ph-fill ph-gift text-brand-primary text-xl"></i></div><div class="flex-1 pr-2 min-w-0"><p class="font-black text-sm text-gray-900 truncate">${v.discount||'Ưu đãi toàn sàn'}</p><p class="text-[11px] text-gray-500 font-medium truncate mt-0.5">${v.condition||'Áp dụng khi thanh toán'}</p></div><div class="bg-gray-900 text-white text-[11px] font-bold px-4 py-2.5 rounded-full whitespace-nowrap animate-pulse-fast shadow-md">Lưu Mã</div></a>`;
+                _pingMetrics(v.link, "Voucher: " + (v.discount || "Toàn sàn"));
+            });
+            document.getElementById('vouchers-list').innerHTML = vHtml;
         }
 
-        window.addEventListener('DOMContentLoaded', bootSystem);
+        // Vẽ danh sách Sản phẩm
+        function renderProducts(products) {
+            const flashList = document.getElementById('flash-sale-list'); 
+            const prodList = document.getElementById('products-list'); 
+            const noRes = document.getElementById('no-result');
+            
+            flashList.innerHTML = ''; prodList.innerHTML = '';
+
+            if(products.length === 0) {
+                noRes.classList.remove('hidden'); noRes.classList.add('flex'); 
+                document.getElementById('flash-sale-container').style.display = 'none'; return;
+            } else { 
+                noRes.classList.add('hidden'); noRes.classList.remove('flex'); 
+            }
+
+            const flashSales = products.filter(p => p.type === 'flash'); 
+            const coreProducts = products.filter(p => p.type !== 'flash');
+
+            // Vẽ Flash Sale
+            if(flashSales.length > 0) {
+                document.getElementById('flash-sale-container').style.display = 'block';
+                let fHtml = '';
+                flashSales.forEach((p, idx) => {
+                    let fb = Math.floor(Math.random() * 2500) + 500; let delay = idx * 100;
+                    fHtml += `<div class="w-36 flex-shrink-0 gradient-vip p-[3px] rounded-[18px] tap-effect opacity-0 animate-fade-in-up shadow-lg" style="animation-delay: ${delay}ms"><a href="${p.link}" onclick="return window._trackClick(event, '${p.link}')" class="block bg-white rounded-2xl overflow-hidden h-full"><div class="relative pb-[100%] bg-gray-100"><img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-cover"><div class="absolute top-0 left-0 bg-brand-dark text-white text-[10px] font-black px-2 py-1 rounded-br-lg z-10 uppercase tracking-widest">HOT</div></div><div class="p-2.5 flex flex-col justify-between h-[120px]"><p class="font-bold text-[13px] text-gray-900 line-clamp-2 leading-tight">${p.name}</p><div class="mt-1"><p class="text-brand-dark font-black text-sm">${p.price||''}</p><p class="text-[9px] text-brand-secondary font-bold mt-0.5"><i class="ph-fill ph-fire"></i> ${fb} đã chốt</p><div class="w-full bg-gradient-to-r from-brand-primary to-brand-secondary text-white text-center text-xs font-black py-2 rounded-xl shadow-md mt-1.5 uppercase">Mua Ngay</div></div></div></a></div>`;
+                    _pingMetrics(p.link, p.name);
+                });
+                flashList.innerHTML = fHtml;
+            } else { document.getElementById('flash-sale-container').style.display = 'none'; }
+
+            // Vẽ Sản phẩm thường
+            let pHtml = '';
+            coreProducts.forEach((p, idx) => {
+                let fb = Math.floor(Math.random() * 900) + 100; let delay = idx * 50;
+                pHtml += `<a href="${p.link}" onclick="return window._trackClick(event, '${p.link}')" class="tap-effect bg-white rounded-[16px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col opacity-0 animate-fade-in-up" style="animation-delay: ${delay}ms"><div class="relative pb-[100%] bg-gray-50 border-b border-gray-50"><img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-cover"></div><div class="p-3 flex flex-col flex-1 justify-between"><p class="font-bold text-[13px] text-gray-800 line-clamp-2 leading-tight">${p.name}</p><div class="mt-2.5"><p class="text-brand-primary font-black text-[14px]">${p.price||''}</p><div class="flex items-center justify-between mt-1.5"><p class="text-[10px] text-gray-400 font-semibold bg-gray-50 px-1.5 py-0.5 rounded">Đã bán ${fb}</p><div class="w-6 h-6 bg-brand-light rounded-full flex items-center justify-center text-brand-primary"><i class="ph-fill ph-arrow-right text-xs"></i></div></div></div></div></a>`;
+                _pingMetrics(p.link, p.name);
+            });
+            prodList.innerHTML = pHtml;
+        }
+
+        // Logic Thanh Tìm Kiếm Trực Tiếp
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            if(term === '') { renderProducts(_rawProducts); } 
+            else { renderProducts(_rawProducts.filter(p => p.name.toLowerCase().includes(term))); }
+        });
+
+        // Nạp dữ liệu vào Giao diện
+        function renderApp(data, masterData) {
+            if(data.settings) {
+                document.title = `${data.settings.profile_name || "Bio Link"} - Deals`;
+                document.getElementById('profile-name').innerHTML = `${data.settings.profile_name || "KOC"} <i class="ph-fill ph-seal-check text-blue-500"></i>`;
+                document.getElementById('sticky-name').innerText = data.settings.profile_name || "KOC";
+                document.getElementById('profile-bio').innerText = data.settings.profile_bio || "";
+                
+                if(data.settings.avatar_url) {
+                    document.getElementById('profile-avatar').src = data.settings.avatar_url;
+                    document.getElementById('sticky-avatar').src = data.settings.avatar_url;
+                }
+                if(data.settings.cover_image) document.getElementById('cover-photo').style.backgroundImage = `url('${data.settings.cover_image}')`;
+                
+                let sHtml = '';
+                if(data.settings.tiktok_link && data.settings.tiktok_link !== '#') sHtml += `<a href="${data.settings.tiktok_link}" target="_blank" class="w-12 h-12 bg-black shadow-lg shadow-black/20 rounded-full flex items-center justify-center text-white tap-effect"><i class="ph-fill ph-tiktok-logo text-2xl"></i></a>`;
+                if(data.settings.facebook_link && data.settings.facebook_link !== '#') sHtml += `<a href="${data.settings.facebook_link}" target="_blank" class="w-12 h-12 bg-[#1877F2] shadow-lg shadow-blue-500/30 rounded-full flex items-center justify-center text-white tap-effect"><i class="ph-fill ph-facebook-logo text-2xl"></i></a>`;
+                document.getElementById('social-links').innerHTML = sHtml;
+                
+                if(data.settings.footer_text && !isPremium) document.getElementById('custom-footer-text').innerText = data.settings.footer_text;
+            }
+
+            // Ghi đè Watermark từ Master (Nếu KOC đang dùng Free)
+            if(masterData && masterData.watermark && !isPremium) {
+                document.getElementById('custom-footer-text').innerText = masterData.watermark;
+            }
+            if(masterData && masterData.watermark_link && !isPremium) {
+                document.getElementById('watermark-link').href = masterData.watermark_link;
+            }
+
+            // Tự động Tắt Logo Cộng Đồng nếu KOC là khách VIP (Premium = TRUE trên Sheet)
+            if(isPremium) {
+                document.getElementById('security-footer').style.display = 'none';
+            }
+
+            renderVouchers(data.vouchers);
+            if(data.products) { _rawProducts = data.products; renderProducts(_rawProducts); }
+        }
+
+        // Kích hoạt Popup FOMO chốt sale ngẫu nhiên
+        function startFomoPopup() {
+            if(_rawProducts.length === 0) return;
+            const popup = document.getElementById('fomo-popup');
+            setInterval(() => {
+                if(popup.classList.contains('hidden')) {
+                    const rp = _rawProducts[Math.floor(Math.random() * _rawProducts.length)];
+                    document.getElementById('fomo-img').src = rp.image;
+                    document.getElementById('fomo-name').innerText = rp.name;
+                    popup.classList.remove('hidden'); popup.classList.add('animate-fomo-slide');
+                    setTimeout(() => { popup.classList.add('hidden'); popup.classList.remove('animate-fomo-slide'); }, 4000);
+                }
+            }, Math.floor(Math.random() * (12000 - 7000 + 1) + 7000)); 
+        }
+
+        // 🪤 BẪY BẢO MẬT MẬT NGỌT (HONEYPOT)
+        setInterval(() => {
+            if(_k !== "" && !isPremium) {
+                const footer = document.getElementById('security-footer');
+                // Nếu ai đó dùng code ẩn Banner bản quyền của bạn, web sẽ sập trắng xóa!
+                if(!footer || footer.innerHTML.trim() === '' || footer.style.display === 'none') {
+                    document.body.innerHTML = ''; window.location.href = 'about:blank';
+                }
+            }
+        }, 3000);
+
+        // ================= 3. KHỞI ĐỘNG HỆ THỐNG VÀ API =================
+        async function bootSystem() {
+            
+            // LUỒNG 1: NẾU BẠN ĐỂ TRỐNG _k => HIỆN TRANG CHỦ ADMIN ĐỂ THU PHỄU KOC
+            if (!_k || _k === "") {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('admin-landing').classList.remove('hidden');
+                document.getElementById('admin-landing').classList.add('flex');
+                
+                document.getElementById('btn-register').href = _formLink;
+                document.getElementById('btn-zalo').href = _zaloLink;
+                return; 
+            }
+
+            // LUỒNG 2: NẾU CÓ MÃ _k => CHẠY BIO LINK CHO KOC ĐÓ
+            const cMasterKey = 'master_auth_' + _k;
+            const cMaster = localStorage.getItem(cMasterKey);
+            let cData = null;
+
+            // Kiểm tra Cache Bộ Nhớ Đệm (Cho phép web load ngay trong 0.1s)
+            if (cMaster) {
+                const parsedMaster = JSON.parse(cMaster);
+                _dict = parsedMaster.taxDictionary || {};
+                isPremium = parsedMaster.isPremium || false;
+                _ub = parsedMaster.userApiUrl || "";
+                
+                if (_ub) {
+                    cData = localStorage.getItem('bio_app_' + _ub);
+                    if (cData) {
+                        renderApp(JSON.parse(cData), parsedMaster);
+                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('app-content').classList.remove('hidden');
+                        startFomoPopup();
+                    }
+                }
+            }
+
+            // Kết nối ngầm lấy Dữ Liệu mới nhất
+            try {
+                // Hỏi Master Sheet trước: Mã này của ai? Cấp link API nào? Được quyền bỏ logo không?
+                const mRes = await fetch(`${_mb}?key=${_k}`);
+                const mData = await mRes.json();
+                
+                if (!mData.isValid) { 
+                    document.getElementById('loading').style.display = 'none'; 
+                    document.getElementById('fatal-error').classList.remove('hidden'); 
+                    document.getElementById('fatal-error').classList.add('flex'); 
+                    return; 
+                }
+
+                _dict = mData.taxDictionary || {};
+                isPremium = mData.isPremium || false;
+                _ub = mData.userApiUrl; // Nhận Link của KOC từ Master truyền xuống
+
+                if (!_ub) return;
+
+                localStorage.setItem(cMasterKey, JSON.stringify(mData));
+
+                // Sau đó, hỏi File Sheet KOC: Khách hàng đang có sản phẩm gì mới?
+                const uRes = await fetch(_ub);
+                const uData = await uRes.json();
+                
+                const cKey = 'bio_app_' + _ub;
+                localStorage.setItem(cKey, JSON.stringify(uData)); // Lưu cache
+                
+                // Nếu đây là lần tải đầu tiên (chưa có cache), hiển thị Giao diện
+                if (!cData) {
+                    renderApp(uData, mData);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('app-content').classList.remove('hidden');
+                    startFomoPopup();
+                }
+            } catch (e) { 
+                console.warn("Đang chạy chế độ Cache Offline do mạng yếu."); 
+            }
+        }
+        
+        bootSystem();
     </script>
 </body>
 </html>
