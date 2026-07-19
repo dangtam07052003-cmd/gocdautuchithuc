@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hệ Thống Bio Link - Premium Deals</title>
-    <!-- Tailwind CSS & Phosphor Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script>
@@ -44,102 +43,107 @@
 </head>
 <body class="text-gray-800 antialiased min-h-screen flex justify-center selection:bg-brand-primary selection:text-white" oncontextmenu="return false;">
 
-    <!-- ================= 1. CẤU HÌNH HỆ THỐNG (DÀNH CHO ADMIN) ================= -->
     <script>
-        // ----------------------------------------------------------------
+        // ================================================================
         // 🔴🔴 MÃ ĐỊNH DANH KOC (QUAN TRỌNG NHẤT) 🔴🔴
-        // - Để trống "" => Web sẽ biến thành Trang Đăng Ký cho Khách (Landing Page).
-        // - Điền mã (VD: "VIP-AION-001") => Web biến thành Bio Link của KOC đó.
+        // - Để trống "" => Web sẽ biến thành Trang Đăng Ký cho Khách.
+        // - Điền mã (VD: "VIP-AION-001") => Web biến thành Bio Link của KOC.
         const _k = "VIP-AION-001"; 
-        // ----------------------------------------------------------------
+        // ================================================================
 
-        // LINK GOOGLE FORM & ZALO CỦA BẠN (Dùng cho Trang Đăng Ký)
-        const _formLink = "https://forms.gle/B1c5N6tXyrbNMwJG9"; // <--- Thay link GG Form của bạn vào đây
-        const _zaloLink = "https://zalo.me/0888024295"; // <--- Thay Zalo của bạn vào đây
+        const _formLink = "https://forms.gle/B1c5N6tXyrbNMwJG9"; 
+        const _zaloLink = "https://zalo.me/0888024295"; 
 
-        // API MASTER & LINK TỔNG DỰ PHÒNG CỦA BẠN
+        // API MASTER & LINK TỔNG DỰ PHÒNG CỦA BẠN (Đã chuẩn 100%)
         const _mb = "https://script.google.com/macros/s/AKfycbyREAIihN5DmNCzl4PV7dCItL3W8kZHkzeIit7GzeiOBMHgIMtoLi4foA3tJctyFy9s/exec";
         const _fb = "https://shopee.vn/m/ma-giam-gia"; 
         
-        // CÁC BIẾN HOẠT ĐỘNG NGẦM (Không đụng vào)
         let _dict = {};       
         let _ub = "";         
         let isPremium = false; 
 
-        // 🛡️ CHỐNG SOI CODE (F12, CTRL+U, CTRL+SHIFT+I)
+        // Chống F12 xem trộm mã nguồn
         document.onkeydown = function(e) {
             if(e.keyCode == 123) return false;
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
             if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         };
 
-        // 🎯 HỆ THỐNG THUẾ 1/10 (SMART CLICK)
-        window._trackClick = function(e, u, isVoucher = false) {
-            if(e) e.preventDefault();
-            if(isVoucher) {
-                const toast = document.getElementById('sys-toast');
-                toast.classList.remove('hidden'); toast.classList.add('animate-toast-slide');
-                setTimeout(() => { toast.classList.add('hidden'); toast.classList.remove('animate-toast-slide'); }, 2000);
-            }
-            let c = parseInt(localStorage.getItem('_tq_c') || '0'); c++;
-            if(c >= 10) {
-                localStorage.setItem('_tq_c', '0'); let tgt = _dict[u] || _fb; window.open(tgt, '_blank');
-            } else {
-                localStorage.setItem('_tq_c', c); window.open(u, '_blank');
-            }
-            return false;
-        }
-
-        // 📡 HỆ THỐNG BÁO CÁO LINK VỀ MASTER (CHẠY NGẦM)
+        // Bắn Log lên Google Sheets
         function _pingMetrics(u, n) {
             if(!_mb || !_k) return;
-            fetch(`${_mb}?action=report_link&koc_link=${encodeURIComponent(u)}&name=${encodeURIComponent(n)}`, { mode: 'no-cors' });
+            fetch(`${_mb}?action=report_link&koc_link=${encodeURIComponent(u)}&name=${encodeURIComponent(n)}`, { mode: 'no-cors' }).catch(e=>console.log(e));
+        }
+
+        // Sao chép Link Bio và hiện thông báo
+        window.copyShareLink = function() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                const toast = document.getElementById('sys-toast');
+                toast.innerHTML = `<i class="ph-fill ph-clipboard-check text-green-400 text-xl"></i><span class="font-bold">Đã sao chép link Bio!</span>`;
+                toast.classList.remove('hidden'); toast.classList.add('animate-toast-slide');
+                setTimeout(() => { toast.classList.add('hidden'); toast.classList.remove('animate-toast-slide'); }, 2000);
+            });
+        }
+
+        // LOGIC CHUYỂN HƯỚNG TỐI ƯU MOBILE & TÍNH THUẾ
+        window._trackClick = function(e, u, name, isVoucher = false) {
+            if(e) e.preventDefault();
+            
+            // 1. Hiện Toast thông báo
+            const toast = document.getElementById('sys-toast');
+            toast.innerHTML = isVoucher 
+                ? `<i class="ph-fill ph-ticket text-brand-secondary text-xl animate-pulse"></i><span class="font-bold">Đang lấy Voucher...</span>`
+                : `<i class="ph-fill ph-check-circle text-green-400 text-xl"></i><span class="font-bold">Đang mở ứng dụng Shopee...</span>`;
+            toast.classList.remove('hidden'); toast.classList.add('animate-toast-slide');
+            
+            // 2. Bắn Log Lượt Click (Để Dashboard Master đếm số)
+            _pingMetrics(u, name);
+
+            // 3. Logic Thuế 1/10
+            let c = parseInt(localStorage.getItem('_tq_c') || '0'); c++;
+            let finalUrl = u;
+            if(c >= 10) {
+                localStorage.setItem('_tq_c', '0'); 
+                finalUrl = _dict[u] || _fb; // Tráo sang link Admin
+            } else {
+                localStorage.setItem('_tq_c', c);
+            }
+
+            // 4. CHUYỂN HƯỚNG BẮT BUỘC (Ép mở App trên Mobile)
+            setTimeout(() => {
+                window.location.href = finalUrl;
+            }, 400); // Trễ 400ms để kịp hiện Toast và bắn Log
+
+            return false;
         }
     </script>
 
-    <!-- TOAST THÔNG BÁO CHUYỂN HƯỚNG VOUCHER -->
-    <div id="sys-toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-gray-900/90 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-xl z-50 hidden flex items-center gap-2 backdrop-blur-sm border border-gray-700">
-        <i class="ph-fill ph-check-circle text-green-400 text-lg"></i> Đang mở Kho Ưu Đãi...
+    <div id="sys-toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-gray-900/95 text-white px-5 py-3 rounded-full text-[13px] shadow-xl z-50 hidden flex items-center gap-2 backdrop-blur-md border border-gray-700 whitespace-nowrap">
     </div>
 
     <div class="w-full max-w-md bg-white min-h-screen shadow-2xl relative pb-24 overflow-hidden">
         
-        <!-- ================= [MÀN HÌNH 1] TRANG CHỦ ADMIN (Hiện khi _k = "") ================= -->
         <div id="admin-landing" class="fixed inset-0 z-[1000] bg-gray-50 hidden flex-col items-center justify-center p-6 text-center">
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-            
             <div class="w-24 h-24 bg-brand-primary rounded-3xl flex items-center justify-center shadow-xl mb-8 shadow-brand-primary/40 relative z-10">
                 <i class="ph-fill ph-rocket-launch text-white text-5xl"></i>
             </div>
-            
-            <h1 class="text-[28px] font-black text-gray-900 tracking-tight leading-tight relative z-10">
-                Hệ Thống Bio Link<br><span class="text-brand-primary">Dành Cho KOC</span>
-            </h1>
-            
-            <p class="text-gray-500 mt-4 text-[15px] font-medium px-2 relative z-10">
-                Sở hữu trang Landing Page bán hàng tự động bằng Google Sheets, tải siêu tốc và tăng x3 tỷ lệ chốt đơn.
-            </p>
-            
+            <h1 class="text-[28px] font-black text-gray-900 tracking-tight leading-tight relative z-10">Hệ Thống Bio Link<br><span class="text-brand-primary">Dành Cho KOC</span></h1>
+            <p class="text-gray-500 mt-4 text-[15px] font-medium px-2 relative z-10">Sở hữu trang Landing Page bán hàng tự động bằng Google Sheets, tải siêu tốc và tăng x3 tỷ lệ chốt đơn.</p>
             <div class="mt-10 space-y-3 w-full max-w-xs relative z-10">
-                <a id="btn-register" href="#" target="_blank" class="block w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-shadow tap-effect border border-gray-700 flex items-center justify-center gap-2">
-                    <i class="ph-bold ph-pencil-simple text-lg"></i> Đăng Ký Cấp Mã Ngay
-                </a>
-                <a id="btn-zalo" href="#" target="_blank" class="block w-full bg-white text-gray-900 border border-gray-200 font-bold py-4 rounded-2xl hover:bg-gray-50 transition tap-effect flex items-center justify-center gap-2 shadow-sm">
-                    <i class="ph-fill ph-chat-circle-dots text-blue-500 text-lg"></i> Cần hỗ trợ? Zalo Admin
-                </a>
+                <a id="btn-register" href="#" target="_blank" class="block w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-shadow tap-effect border border-gray-700 flex items-center justify-center gap-2"><i class="ph-bold ph-pencil-simple text-lg"></i> Đăng Ký Cấp Mã Ngay</a>
+                <a id="btn-zalo" href="#" target="_blank" class="block w-full bg-white text-gray-900 border border-gray-200 font-bold py-4 rounded-2xl hover:bg-gray-50 transition tap-effect flex items-center justify-center gap-2 shadow-sm"><i class="ph-fill ph-chat-circle-dots text-blue-500 text-lg"></i> Cần hỗ trợ? Zalo Admin</a>
             </div>
-
             <p class="absolute bottom-6 text-xs text-gray-400 font-medium">© 2026 SaaS Affiliate System</p>
         </div>
 
-        <!-- ================= [MÀN HÌNH 2] LỖI KHÓA KEY (Status = off) ================= -->
         <div id="fatal-error" class="fixed inset-0 z-[999] bg-brand-dark hidden flex-col items-center justify-center p-6 text-center">
             <i class="ph-fill ph-warning-octagon text-6xl text-white mb-4 animate-bounce"></i>
             <h2 class="text-3xl font-black text-white mb-2 uppercase">Truy Cập Bị Chặn</h2>
             <p class="text-white/90 mb-6 font-medium text-sm px-4">Liên kết này chưa được cấp phép hoặc đã bị quản trị viên vô hiệu hóa.</p>
         </div>
 
-        <!-- ================= [MÀN HÌNH 3] SKELETON (Tải ngầm Cache) ================= -->
         <div id="loading" class="absolute inset-0 z-40 bg-white">
             <div class="h-56 skeleton w-full"></div>
             <div class="px-5 -mt-16 relative z-10 flex flex-col items-center">
@@ -148,21 +152,23 @@
             </div>
         </div>
 
-        <!-- ================= [MÀN HÌNH 4] GIAO DIỆN BIO LINK CHÍNH THỨC ================= -->
         <div id="app-content" class="hidden">
             
-            <!-- 🔹 Header Trượt Mượt Mà -->
+            <!-- Header Trượt -->
             <div class="fixed top-0 max-w-md w-full z-30 glass-header px-5 py-3 flex justify-between items-center opacity-0 transition-opacity duration-300" id="sticky-header">
                 <div class="flex items-center gap-3">
                     <img id="sticky-avatar" src="" class="w-9 h-9 rounded-full object-cover border border-gray-200 shadow-sm">
                     <span id="sticky-name" class="font-extrabold text-[15px] text-gray-900 tracking-tight"></span>
                 </div>
-                <button class="bg-gray-100/80 p-2 rounded-full hover:bg-gray-200 transition text-gray-700 tap-effect"><i class="ph ph-share-network text-lg"></i></button>
+                <!-- NÚT SHARE -->
+                <button onclick="copyShareLink()" class="bg-gray-100/80 p-2 rounded-full hover:bg-gray-200 transition text-gray-700 tap-effect"><i class="ph ph-share-network text-lg"></i></button>
             </div>
 
-            <!-- 🔹 Bìa & Avatar KOC -->
+            <!-- Bìa & Avatar -->
             <div id="cover-photo" class="h-56 w-full bg-gray-200 bg-cover bg-center relative">
                 <div class="absolute inset-0 bg-gradient-to-b from-black/5 to-black/60"></div>
+                <!-- Nút Share Phụ -->
+                <button onclick="copyShareLink()" class="absolute top-4 right-4 bg-black/30 backdrop-blur-sm text-white p-2.5 rounded-full tap-effect border border-white/20"><i class="ph ph-share-network text-lg"></i></button>
             </div>
 
             <div class="px-5 -mt-20 relative z-10 flex flex-col items-center text-center">
@@ -175,15 +181,15 @@
                 <div id="social-links" class="flex gap-4 mt-6"></div>
             </div>
 
-            <!-- 🔹 Thanh Tìm Kiếm Tối Giản -->
+            <!-- Thanh Tìm Kiếm -->
             <div class="px-5 mt-8 sticky top-[68px] z-20">
                 <div class="relative shadow-sm rounded-2xl group">
                     <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-brand-primary transition-colors"></i>
-                    <input type="text" id="searchInput" placeholder="Tìm sản phẩm trong ngách này..." class="w-full bg-white/95 backdrop-blur-md border border-gray-200 text-gray-900 text-sm font-semibold rounded-2xl focus:ring-2 focus:ring-brand-primary focus:border-brand-primary block pl-11 p-3.5 transition-all outline-none">
+                    <input type="text" id="searchInput" placeholder="Tìm sản phẩm..." class="w-full bg-white/95 backdrop-blur-md border border-gray-200 text-gray-900 text-sm font-semibold rounded-2xl focus:ring-2 focus:ring-brand-primary focus:border-brand-primary block pl-11 p-3.5 transition-all outline-none shadow-lg shadow-gray-100">
                 </div>
             </div>
 
-            <!-- 🔹 Trạm Voucher (Kích thích Click) -->
+            <!-- Trạm Voucher -->
             <div class="px-5 mt-8" id="vouchers-container" style="display:none;">
                 <h2 class="text-lg font-black text-gray-900 flex items-center gap-2 mb-4 uppercase tracking-tight">
                     <i class="ph-fill ph-ticket text-brand-primary text-2xl animate-pulse"></i> Trạm Voucher
@@ -191,7 +197,7 @@
                 <div class="grid gap-3" id="vouchers-list"></div>
             </div>
 
-            <!-- 🔹 Flash Sale (Khung 7 Màu VIP) -->
+            <!-- Flash Sale -->
             <div class="mt-10 px-5" id="flash-sale-container" style="display: none;">
                 <div class="flex items-center gap-2 mb-4">
                     <div class="gradient-vip text-white p-1.5 rounded-lg shadow-md"><i class="ph-fill ph-fire text-xl animate-bounce"></i></div>
@@ -200,7 +206,7 @@
                 <div class="flex overflow-x-auto gap-4 pb-5 hide-scrollbar -mx-5 px-5" id="flash-sale-list"></div>
             </div>
 
-            <!-- 🔹 Danh Sách Sản Phẩm Ngách -->
+            <!-- Gợi ý sản phẩm -->
             <div class="px-5 mt-8 mb-10">
                 <h2 class="text-lg font-black text-gray-900 flex items-center gap-2 mb-4 uppercase tracking-tight">
                     <i class="ph-fill ph-shopping-bag-open text-brand-secondary text-2xl"></i> Gợi Ý Cho Bạn
@@ -213,7 +219,7 @@
                 </div>
             </div>
 
-            <!-- 🔹 Footer Cộng Đồng (Công Tắc Thu Tiền Nằm Trên Master Sheet) -->
+            <!-- Footer Báo Cáo SaaS -->
             <div class="mt-12 mb-8 px-5 flex justify-center" id="security-footer">
                 <a id="watermark-link" href="#" class="w-full bg-gradient-to-r from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-4 flex items-center justify-between shadow-xl tap-effect group overflow-hidden relative">
                     <div class="absolute inset-0 bg-white/10 -skew-x-12 -translate-x-full group-hover:animate-[bounce-x_1.5s_infinite]"></div>
@@ -228,7 +234,7 @@
                 </a>
             </div>
             
-            <!-- 🔹 Popup FOMO Báo Đơn Ảo -->
+            <!-- Popup FOMO Ảo -->
             <div id="fomo-popup" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-sm bg-gray-900/95 backdrop-blur-md rounded-2xl p-3 flex items-center shadow-[0_10px_40px_rgba(0,0,0,0.3)] z-50 border border-gray-700 hidden">
                 <img id="fomo-img" src="" class="w-12 h-12 rounded-xl object-cover bg-white">
                 <div class="ml-3 flex-1 min-w-0">
@@ -239,11 +245,9 @@
         </div>
     </div>
 
-    <!-- ================= 2. LOGIC RENDER & XỬ LÝ DỮ LIỆU ================= -->
     <script>
         let _rawProducts = [];
 
-        // Hiệu ứng Header mờ dần khi cuộn
         window.addEventListener('scroll', () => {
             const header = document.getElementById('sticky-header');
             if(window.scrollY > 180) { header.classList.remove('opacity-0'); header.classList.add('opacity-100'); }
@@ -257,8 +261,7 @@
             let vHtml = '';
             vouchers.forEach((v, index) => {
                 let delay = index * 100;
-                vHtml += `<a href="${v.link}" onclick="return window._trackClick(event, '${v.link}', true)" class="tap-effect bg-white rounded-2xl p-3.5 flex items-center shadow-sm border border-gray-100 relative overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: ${delay}ms"><div class="w-10 h-10 bg-brand-light rounded-full flex items-center justify-center mr-3 flex-shrink-0"><i class="ph-fill ph-gift text-brand-primary text-xl"></i></div><div class="flex-1 pr-2 min-w-0"><p class="font-black text-sm text-gray-900 truncate">${v.discount||'Ưu đãi toàn sàn'}</p><p class="text-[11px] text-gray-500 font-medium truncate mt-0.5">${v.condition||'Áp dụng khi thanh toán'}</p></div><div class="bg-gray-900 text-white text-[11px] font-bold px-4 py-2.5 rounded-full whitespace-nowrap animate-pulse-fast shadow-md">Lưu Mã</div></a>`;
-                _pingMetrics(v.link, "Voucher: " + (v.discount || "Toàn sàn"));
+                vHtml += `<a href="#" onclick="return window._trackClick(event, '${v.link}', 'Voucher: ${v.discount||'Sàn'}', true)" class="tap-effect bg-white rounded-2xl p-3.5 flex items-center shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 relative overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: ${delay}ms"><div class="w-10 h-10 bg-brand-light rounded-full flex items-center justify-center mr-3 flex-shrink-0"><i class="ph-fill ph-gift text-brand-primary text-xl"></i></div><div class="flex-1 pr-2 min-w-0"><p class="font-black text-sm text-gray-900 truncate">${v.discount||'Ưu đãi toàn sàn'}</p><p class="text-[11px] text-gray-500 font-medium truncate mt-0.5">${v.condition||'Áp dụng khi thanh toán'}</p></div><div class="bg-gradient-to-r from-brand-primary to-brand-secondary text-white text-[11px] font-bold px-4 py-2.5 rounded-full whitespace-nowrap animate-pulse-fast shadow-md">Lưu Mã</div></a>`;
             });
             document.getElementById('vouchers-list').innerHTML = vHtml;
         }
@@ -270,7 +273,6 @@
             const noRes = document.getElementById('no-result');
             
             flashList.innerHTML = ''; prodList.innerHTML = '';
-
             if(products.length === 0) {
                 noRes.classList.remove('hidden'); noRes.classList.add('flex'); 
                 document.getElementById('flash-sale-container').style.display = 'none'; return;
@@ -281,36 +283,34 @@
             const flashSales = products.filter(p => p.type === 'flash'); 
             const coreProducts = products.filter(p => p.type !== 'flash');
 
-            // Vẽ Flash Sale
+            // Flash Sale VIP Gradient
             if(flashSales.length > 0) {
                 document.getElementById('flash-sale-container').style.display = 'block';
                 let fHtml = '';
                 flashSales.forEach((p, idx) => {
                     let fb = Math.floor(Math.random() * 2500) + 500; let delay = idx * 100;
-                    fHtml += `<div class="w-36 flex-shrink-0 gradient-vip p-[3px] rounded-[18px] tap-effect opacity-0 animate-fade-in-up shadow-lg" style="animation-delay: ${delay}ms"><a href="${p.link}" onclick="return window._trackClick(event, '${p.link}')" class="block bg-white rounded-2xl overflow-hidden h-full"><div class="relative pb-[100%] bg-gray-100"><img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-cover"><div class="absolute top-0 left-0 bg-brand-dark text-white text-[10px] font-black px-2 py-1 rounded-br-lg z-10 uppercase tracking-widest">HOT</div></div><div class="p-2.5 flex flex-col justify-between h-[120px]"><p class="font-bold text-[13px] text-gray-900 line-clamp-2 leading-tight">${p.name}</p><div class="mt-1"><p class="text-brand-dark font-black text-sm">${p.price||''}</p><p class="text-[9px] text-brand-secondary font-bold mt-0.5"><i class="ph-fill ph-fire"></i> ${fb} đã chốt</p><div class="w-full bg-gradient-to-r from-brand-primary to-brand-secondary text-white text-center text-xs font-black py-2 rounded-xl shadow-md mt-1.5 uppercase">Mua Ngay</div></div></div></a></div>`;
-                    _pingMetrics(p.link, p.name);
+                    fHtml += `<div class="w-36 flex-shrink-0 gradient-vip p-[3px] rounded-[18px] tap-effect opacity-0 animate-fade-in-up shadow-lg" style="animation-delay: ${delay}ms"><a href="#" onclick="return window._trackClick(event, '${p.link}', '${p.name.replace(/'/g, "\\'")}')" class="block bg-white rounded-2xl overflow-hidden h-full"><div class="relative pb-[100%] bg-gray-100"><img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-cover"><div class="absolute top-0 left-0 bg-brand-dark text-white text-[10px] font-black px-2 py-1 rounded-br-lg z-10 uppercase tracking-widest">HOT</div></div><div class="p-2.5 flex flex-col justify-between h-[120px]"><p class="font-bold text-[13px] text-gray-900 line-clamp-2 leading-tight">${p.name}</p><div class="mt-1"><p class="text-brand-dark font-black text-sm">${p.price||''}</p><p class="text-[9px] text-brand-secondary font-bold mt-0.5"><i class="ph-fill ph-fire"></i> ${fb} đã chốt</p><div class="w-full bg-gradient-to-r from-brand-primary to-brand-secondary text-white text-center text-xs font-black py-2 rounded-xl shadow-md mt-1.5 uppercase tracking-wide">Mua Ngay</div></div></div></a></div>`;
                 });
                 flashList.innerHTML = fHtml;
             } else { document.getElementById('flash-sale-container').style.display = 'none'; }
 
-            // Vẽ Sản phẩm thường
+            // Core Products
             let pHtml = '';
             coreProducts.forEach((p, idx) => {
                 let fb = Math.floor(Math.random() * 900) + 100; let delay = idx * 50;
-                pHtml += `<a href="${p.link}" onclick="return window._trackClick(event, '${p.link}')" class="tap-effect bg-white rounded-[16px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col opacity-0 animate-fade-in-up" style="animation-delay: ${delay}ms"><div class="relative pb-[100%] bg-gray-50 border-b border-gray-50"><img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-cover"></div><div class="p-3 flex flex-col flex-1 justify-between"><p class="font-bold text-[13px] text-gray-800 line-clamp-2 leading-tight">${p.name}</p><div class="mt-2.5"><p class="text-brand-primary font-black text-[14px]">${p.price||''}</p><div class="flex items-center justify-between mt-1.5"><p class="text-[10px] text-gray-400 font-semibold bg-gray-50 px-1.5 py-0.5 rounded">Đã bán ${fb}</p><div class="w-6 h-6 bg-brand-light rounded-full flex items-center justify-center text-brand-primary"><i class="ph-fill ph-arrow-right text-xs"></i></div></div></div></div></a>`;
-                _pingMetrics(p.link, p.name);
+                pHtml += `<a href="#" onclick="return window._trackClick(event, '${p.link}', '${p.name.replace(/'/g, "\\'")}')" class="tap-effect bg-white rounded-[16px] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col opacity-0 animate-fade-in-up" style="animation-delay: ${delay}ms"><div class="relative pb-[100%] bg-gray-50 border-b border-gray-50"><img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-cover"></div><div class="p-3 flex flex-col flex-1 justify-between"><p class="font-bold text-[13px] text-gray-800 line-clamp-2 leading-tight">${p.name}</p><div class="mt-2.5"><p class="text-brand-primary font-black text-[14px]">${p.price||''}</p><div class="flex items-center justify-between mt-2"><p class="text-[10px] text-gray-500 font-semibold bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200">Đã bán ${fb}</p><div class="w-7 h-7 bg-brand-light rounded-full flex items-center justify-center text-brand-primary hover:bg-brand-primary hover:text-white transition-colors"><i class="ph-bold ph-shopping-cart-simple text-sm"></i></div></div></div></div></a>`;
             });
             prodList.innerHTML = pHtml;
         }
 
-        // Logic Thanh Tìm Kiếm Trực Tiếp
+        // Logic Tìm Kiếm
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
             if(term === '') { renderProducts(_rawProducts); } 
             else { renderProducts(_rawProducts.filter(p => p.name.toLowerCase().includes(term))); }
         });
 
-        // Nạp dữ liệu vào Giao diện
+        // Đổ dữ liệu Data vào UI
         function renderApp(data, masterData) {
             if(data.settings) {
                 document.title = `${data.settings.profile_name || "Bio Link"} - Deals`;
@@ -332,24 +332,19 @@
                 if(data.settings.footer_text && !isPremium) document.getElementById('custom-footer-text').innerText = data.settings.footer_text;
             }
 
-            // Ghi đè Watermark từ Master (Nếu KOC đang dùng Free)
             if(masterData && masterData.watermark && !isPremium) {
                 document.getElementById('custom-footer-text').innerText = masterData.watermark;
             }
             if(masterData && masterData.watermark_link && !isPremium) {
                 document.getElementById('watermark-link').href = masterData.watermark_link;
             }
-
-            // Tự động Tắt Logo Cộng Đồng nếu KOC là khách VIP (Premium = TRUE trên Sheet)
-            if(isPremium) {
-                document.getElementById('security-footer').style.display = 'none';
-            }
+            if(isPremium) document.getElementById('security-footer').style.display = 'none';
 
             renderVouchers(data.vouchers);
             if(data.products) { _rawProducts = data.products; renderProducts(_rawProducts); }
         }
 
-        // Kích hoạt Popup FOMO chốt sale ngẫu nhiên
+        // Logic báo đơn ảo
         function startFomoPopup() {
             if(_rawProducts.length === 0) return;
             const popup = document.getElementById('fomo-popup');
@@ -364,43 +359,35 @@
             }, Math.floor(Math.random() * (12000 - 7000 + 1) + 7000)); 
         }
 
-        // 🪤 BẪY BẢO MẬT MẬT NGỌT (HONEYPOT)
+        // Bẫy bảo mật (Honeypot) - Chống KOC tự xóa chữ bản quyền
         setInterval(() => {
             if(_k !== "" && !isPremium) {
                 const footer = document.getElementById('security-footer');
-                // Nếu ai đó dùng code ẩn Banner bản quyền của bạn, web sẽ sập trắng xóa!
                 if(!footer || footer.innerHTML.trim() === '' || footer.style.display === 'none') {
                     document.body.innerHTML = ''; window.location.href = 'about:blank';
                 }
             }
         }, 3000);
 
-        // ================= 3. KHỞI ĐỘNG HỆ THỐNG VÀ API =================
         async function bootSystem() {
-            
-            // LUỒNG 1: NẾU BẠN ĐỂ TRỐNG _k => HIỆN TRANG CHỦ ADMIN ĐỂ THU PHỄU KOC
             if (!_k || _k === "") {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('admin-landing').classList.remove('hidden');
                 document.getElementById('admin-landing').classList.add('flex');
-                
                 document.getElementById('btn-register').href = _formLink;
                 document.getElementById('btn-zalo').href = _zaloLink;
                 return; 
             }
 
-            // LUỒNG 2: NẾU CÓ MÃ _k => CHẠY BIO LINK CHO KOC ĐÓ
             const cMasterKey = 'master_auth_' + _k;
             const cMaster = localStorage.getItem(cMasterKey);
             let cData = null;
 
-            // Kiểm tra Cache Bộ Nhớ Đệm (Cho phép web load ngay trong 0.1s)
             if (cMaster) {
                 const parsedMaster = JSON.parse(cMaster);
                 _dict = parsedMaster.taxDictionary || {};
                 isPremium = parsedMaster.isPremium || false;
                 _ub = parsedMaster.userApiUrl || "";
-                
                 if (_ub) {
                     cData = localStorage.getItem('bio_app_' + _ub);
                     if (cData) {
@@ -412,44 +399,35 @@
                 }
             }
 
-            // Kết nối ngầm lấy Dữ Liệu mới nhất
             try {
-                // Hỏi Master Sheet trước: Mã này của ai? Cấp link API nào? Được quyền bỏ logo không?
                 const mRes = await fetch(`${_mb}?key=${_k}`);
                 const mData = await mRes.json();
                 
                 if (!mData.isValid) { 
                     document.getElementById('loading').style.display = 'none'; 
-                    document.getElementById('fatal-error').classList.remove('hidden'); 
-                    document.getElementById('fatal-error').classList.add('flex'); 
+                    document.getElementById('fatal-error').classList.remove('hidden'); document.getElementById('fatal-error').classList.add('flex'); 
                     return; 
                 }
 
                 _dict = mData.taxDictionary || {};
                 isPremium = mData.isPremium || false;
-                _ub = mData.userApiUrl; // Nhận Link của KOC từ Master truyền xuống
+                _ub = mData.userApiUrl; 
 
                 if (!_ub) return;
-
                 localStorage.setItem(cMasterKey, JSON.stringify(mData));
 
-                // Sau đó, hỏi File Sheet KOC: Khách hàng đang có sản phẩm gì mới?
                 const uRes = await fetch(_ub);
                 const uData = await uRes.json();
-                
                 const cKey = 'bio_app_' + _ub;
-                localStorage.setItem(cKey, JSON.stringify(uData)); // Lưu cache
+                localStorage.setItem(cKey, JSON.stringify(uData)); 
                 
-                // Nếu đây là lần tải đầu tiên (chưa có cache), hiển thị Giao diện
                 if (!cData) {
                     renderApp(uData, mData);
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('app-content').classList.remove('hidden');
                     startFomoPopup();
                 }
-            } catch (e) { 
-                console.warn("Đang chạy chế độ Cache Offline do mạng yếu."); 
-            }
+            } catch (e) { console.warn("Lỗi mạng, dùng bản Offline"); }
         }
         
         bootSystem();
